@@ -1,0 +1,318 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  
+  /* Primary color palette in hex format */
+  --primary: #1b5e20;
+  --primary-foreground: #ffffff;
+  --primary-50: #e8f5e9;
+  --primary-100: #c8e6c9;
+  --primary-200: #a5d6a7;
+  --primary-300: #81c784;
+  --primary-400: #66bb6a;
+  --primary-500: #4caf50;
+  --primary-600: #43a047;
+  --primary-700: #388e3c;
+  --primary-800: #2e7d32;
+  --primary-900: #1b5e20;
+  --primary-950: #003300;
+  
+  /* Sidebar specific colors */
+  --sidebar: var(--primary-950);
+  --sidebar-foreground: var(--primary-50);
+  --sidebar-primary: var(--primary-700);
+  --sidebar-primary-foreground: var(--primary-50);
+  --sidebar-accent: var(--primary-800);
+  --sidebar-accent-foreground: var(--primary-100);
+  --sidebar-border: var(--primary-800);
+  --sidebar-ring: var(--primary-400);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  
+  /* Dark mode primary colors */
+  --primary: #4caf50;
+  --primary-foreground: #ffffff;
+  --primary-50: #f1f8e9;
+  --primary-100: #dcedc8;
+  --primary-200: #c5e1a5;
+  --primary-300: #aed581;
+  --primary-400: #9ccc65;
+  --primary-500: #8bc34a;
+  --primary-600: #7cb342;
+  --primary-700: #689f38;
+  --primary-800: #558b2f;
+  --primary-900: #33691e;
+  --primary-950: #1a3409;
+  
+  /* Dark mode sidebar colors */
+  --sidebar: var(--primary-950);
+  --sidebar-foreground: var(--primary-50);
+  --sidebar-primary: var(--primary-700);
+  --sidebar-primary-foreground: var(--primary-50);
+  --sidebar-accent: var(--primary-800);
+  --sidebar-accent-foreground: var(--primary-100);
+  --sidebar-border: var(--primary-800);
+  --sidebar-ring: var(--primary-400);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+
+@layer utilities {
+  /* Layout utilities */
+  .layout-container {
+    @apply flex min-h-screen h-screen overflow-hidden;
+  }
+  
+  .sidebar-fixed {
+    @apply w-72 flex-shrink-0 h-screen overflow-hidden;
+  }
+  
+  .content-wrapper {
+    @apply flex-1 flex flex-col h-screen overflow-hidden;
+  }
+  
+  .content-area {
+    @apply flex-1 p-6 overflow-auto;
+  }
+  
+  /* Table containers - điều chỉnh để hoạt động tốt trong không gian giới hạn */
+  .data-table-container {
+    @apply w-full rounded-md border border-border overflow-hidden;
+    max-width: calc(100vw - 18rem - 3rem);
+  }
+  
+  .table-scroll-container {
+    @apply w-full overflow-x-auto;
+  }
+  
+  .table-scroll-body {
+    @apply overflow-y-auto;
+  }
+}
+
+@layer components {
+  /* Main table container with border */
+  .data-table-container {
+    @apply relative w-full overflow-hidden rounded-md border border-border;
+  }
+  
+  /* Horizontal scroll container */
+  .table-scroll-container {
+    @apply w-full overflow-x-auto;
+  }
+  
+  /* Vertical scroll container with fixed height */
+  .table-scroll-body {
+    @apply overflow-y-auto;
+    /* Height will be set via inline style */
+  }
+  
+  /* Table styling for fixed layout */
+  .fixed-header-table {
+    @apply w-full table-auto border-separate border-spacing-0;
+    /* Ensure border-collapse is reset for proper sticky behavior */
+  }
+  
+  /* Fixed header styling */
+  .table-header-group {
+    @apply sticky top-0 z-20 bg-muted/80 backdrop-blur-sm; 
+  }
+  
+  /* Header cells */
+  .table-header-cell {
+    @apply py-3 px-4 text-left align-middle font-semibold text-foreground;
+    @apply bg-muted/90 border-b-2 border-primary/20;
+    @apply whitespace-nowrap;
+  }
+  
+  /* Sticky first column */
+  .sticky-first-column {
+    @apply sticky left-0 z-10;
+  }
+  
+  /* First column header (double sticky - top and left) */
+  .sticky-first-column-header {
+    @apply sticky left-0 z-30 bg-muted/95 backdrop-blur-sm;
+  }
+  
+  /* Table body styling */
+  .table-body {
+    @apply bg-background;
+  }
+  
+  /* Cell styling cho text overflow */
+  .table-cell {
+    @apply py-3 px-4 border-b align-middle relative;
+    overflow: hidden; /* Quan trọng để tránh overflow */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Cell content với text truncation tốt hơn */
+  .cell-content {
+    @apply block w-full overflow-hidden text-ellipsis whitespace-nowrap;
+    max-width: 100%; /* Đảm bảo không vượt quá width của cell */
+  }
+  
+  /* Tooltip styling khi hover cell */
+  .cell-tooltip {
+    @apply invisible absolute left-0 top-full z-50 mt-2 max-w-xs rounded-md
+           bg-popover p-2 text-sm text-popover-foreground shadow-md;
+    width: auto;
+    max-width: 300px; /* Giới hạn width của tooltip */
+    white-space: normal; /* Cho phép tooltip xuống dòng */
+    word-break: break-word; /* Ngắt từ nếu cần */
+  }
+  
+  /* Hiện tooltip khi hover */
+  .cell-wrapper:hover .cell-tooltip {
+    @apply visible;
+  }
+  
+  /* Đảm bảo các ô có chiều rộng cố định */
+  .fixed-width-cell {
+    @apply overflow-hidden;
+    width: var(--cell-width, auto);
+    min-width: var(--cell-min-width, 100px);
+    max-width: var(--cell-max-width, 300px);
+  }
+  
+  /* Zebra striping for rows */
+  .table-row-even {
+    @apply bg-background;
+  }
+  
+  .table-row-odd {
+    @apply bg-muted/30;
+  }
+  
+  /* Hover effect for rows */
+  .table-row:hover {
+    @apply bg-muted/50;
+  }
+
+  /* Add sticky column styles */
+  .sticky-column-header {
+    position: sticky !important;
+    background-color: var(--muted) !important;
+    z-index: 30;
+  }
+  
+  .sticky-column-cell {
+    position: sticky !important;
+    z-index: 20;
+  }
+  
+  /* Shadow for sticky columns to create visual separation */
+  :root {
+    --shadow-sticky-column: 5px 0 5px -5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark {
+    --shadow-sticky-column: 5px 0 5px -5px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Alternate background color for table rows */
+  :root {
+    --muted-alt: var(--muted-30);
+  }
+  
+  .dark {
+    --muted-alt: var(--muted-30);
+  }
+}
