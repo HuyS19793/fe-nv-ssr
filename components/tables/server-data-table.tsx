@@ -147,7 +147,8 @@ export function ServerDataTable<TData>({
       if (col.meta?.isSticky) {
         // Extract width without 'px' and convert to number
         const width = col.meta.width || '180px'
-        leftPosition += parseInt(width, 10)
+        const widthValue = parseInt(width, 10)
+        leftPosition += widthValue
       }
     }
 
@@ -234,7 +235,8 @@ export function ServerDataTable<TData>({
                             position: 'sticky',
                             left: leftPosition,
                             zIndex,
-                            backgroundColor: 'var(--muted)', // Ensure background is solid
+                            // Improved background for better visibility
+                            backgroundColor: 'var(--sticky-header-bg)',
                             boxShadow: 'var(--shadow-sticky-column)',
                           }),
                         }}>
@@ -251,7 +253,9 @@ export function ServerDataTable<TData>({
                     const row = createTableRow(record, index)
                     // Determine row background based on even/odd
                     const rowBg =
-                      index % 2 === 0 ? 'var(--background)' : 'var(--muted-alt)'
+                      index % 2 === 0
+                        ? 'var(--sticky-cell-even-bg)'
+                        : 'var(--sticky-cell-odd-bg)'
 
                     return (
                       <TableRow
@@ -312,13 +316,14 @@ export function ServerDataTable<TData>({
                               width={width}
                               minWidth={minWidth}
                               maxWidth={maxWidth}
+                              isSticky={isSticky}
                               className={cn(isSticky && 'sticky-column-cell')}
                               style={{
                                 ...(isSticky && {
                                   position: 'sticky',
                                   left: leftPosition,
                                   zIndex,
-                                  backgroundColor: rowBg, // Use row background
+                                  backgroundColor: rowBg,
                                   boxShadow: 'var(--shadow-sticky-column)',
                                 }),
                               }}

@@ -29,7 +29,7 @@ export function getTableColumns({
   const selectionColumn: ColumnDef<ScheduledJob> = {
     id: 'select',
     meta: {
-      width: '50px',
+      width: '40px',
       minWidth: '40px',
       maxWidth: '60px',
       isSticky: true, // Add this to indicate it's a sticky column
@@ -64,9 +64,9 @@ export function getTableColumns({
     accessorKey: 'job_name',
     id: 'job_name',
     meta: {
-      width: '300px',
-      minWidth: '200px',
-      maxWidth: '400px',
+      width: '180px', // Slightly reduced to make columns closer
+      minWidth: '180px',
+      maxWidth: '380px',
       isSticky: true, // Mark as sticky
       stickyPosition: 1, // Position 1 (second)
     },
@@ -90,9 +90,9 @@ export function getTableColumns({
     accessorKey: 'job_status',
     id: 'job_status',
     meta: {
-      width: '150px',
-      minWidth: '120px',
-      maxWidth: '180px',
+      width: '140px', // Slightly reduced to make columns closer
+      minWidth: '110px',
+      maxWidth: '160px',
       isSticky: true, // Mark as sticky
       stickyPosition: 2, // Position 2 (third)
     },
@@ -115,11 +115,7 @@ export function getTableColumns({
   const otherColumns = Object.entries(columnMapping)
     .filter(([key]) => {
       // Filter out excluded fields and manually defined columns
-      const skipFields = [
-        ...excludedFields,
-        'job_name', // Skip as we've defined it manually
-        'job_status', // Skip as we've defined it manually
-      ]
+      const skipFields = [...excludedFields, 'job_name', 'job_status']
       return !skipFields.includes(key)
     })
     .map(([key, header]) => {

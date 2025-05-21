@@ -13,6 +13,7 @@ interface TableCellProps extends Omit<React.ComponentProps<'td'>, 'content'> {
   minWidth?: string
   maxWidth?: string
   tooltipDisabled?: boolean
+  isSticky?: boolean
   style?: React.CSSProperties // Add style prop for sticky positioning
 }
 
@@ -23,6 +24,7 @@ export function TableCell({
   minWidth = '100px',
   maxWidth = '300px',
   tooltipDisabled = false,
+  isSticky = false,
   className,
   style, // Accept style prop
   ...props
@@ -69,13 +71,26 @@ export function TableCell({
   return (
     <UITableCell
       ref={cellRef}
-      className={cn('table-cell fixed-width-cell', className)}
+      className={cn(
+        'table-cell fixed-width-cell',
+        isSticky && 'sticky-table-cell',
+        className
+      )}
       style={baseStyle}
       {...props}>
-      <div className='cell-wrapper relative'>
+      <div
+        className={cn(
+          'cell-wrapper relative',
+          isSticky && 'sticky-cell-wrapper'
+        )}>
         <div
           ref={contentRef}
-          className='cell-content'
+          className={cn(
+            'cell-content',
+            isSticky
+              ? 'sticky-cell-content'
+              : 'overflow-hidden text-ellipsis whitespace-nowrap'
+          )}
           title={
             tooltipDisabled ? undefined : rawValue || String(content || '')
           }>

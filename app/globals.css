@@ -91,6 +91,15 @@
   --sidebar-accent-foreground: var(--primary-100);
   --sidebar-border: var(--primary-800);
   --sidebar-ring: var(--primary-400);
+  
+  /* Table header and sticky columns */
+  --sticky-header-bg: oklch(0.97 0 0 / 98%);
+  --sticky-cell-even-bg: oklch(1 0 0 / 98%);
+  --sticky-cell-odd-bg: oklch(0.97 0 0 / 98%);
+  --shadow-sticky-column: 4px 0 6px -4px rgba(0, 0, 0, 0.15);
+  --header-z-index: 50;
+  --sticky-header-z-index: 100;
+  --sticky-cell-z-index: 40;
 }
 
 .dark {
@@ -140,6 +149,12 @@
   --sidebar-accent-foreground: var(--primary-100);
   --sidebar-border: var(--primary-800);
   --sidebar-ring: var(--primary-400);
+  
+  /* Dark mode table sticky columns */
+  --sticky-header-bg: oklch(0.269 0 0 / 98%);
+  --sticky-cell-even-bg: oklch(0.205 0 0 / 98%);
+  --sticky-cell-odd-bg: oklch(0.269 0 0 / 98%);
+  --shadow-sticky-column: 4px 0 6px -4px rgba(0, 0, 0, 0.35);
 }
 
 @layer base {
@@ -174,6 +189,7 @@
   .data-table-container {
     @apply w-full rounded-md border border-border overflow-hidden;
     max-width: calc(100vw - 18rem - 3rem);
+    position: relative;
   }
   
   .table-scroll-container {
@@ -182,6 +198,7 @@
   
   .table-scroll-body {
     @apply overflow-y-auto;
+    position: relative;
   }
 }
 
@@ -199,18 +216,23 @@
   /* Vertical scroll container with fixed height */
   .table-scroll-body {
     @apply overflow-y-auto;
+    position: relative;
     /* Height will be set via inline style */
   }
   
   /* Table styling for fixed layout */
   .fixed-header-table {
     @apply w-full table-auto border-separate border-spacing-0;
+    position: relative;
     /* Ensure border-collapse is reset for proper sticky behavior */
   }
   
   /* Fixed header styling */
   .table-header-group {
-    @apply sticky top-0 z-20 bg-muted/80 backdrop-blur-sm; 
+    @apply sticky top-0;
+    z-index: var(--header-z-index) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
   
   /* Header cells */
@@ -218,6 +240,24 @@
     @apply py-3 px-4 text-left align-middle font-semibold text-foreground;
     @apply bg-muted/90 border-b-2 border-primary/20;
     @apply whitespace-nowrap;
+    position: relative;
+  }
+  
+  /* Sticky column header with higher z-index */
+  .sticky-column-header {
+    position: sticky !important;
+    z-index: var(--sticky-header-z-index) !important;
+    background-color: var(--sticky-header-bg) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: var(--shadow-sticky-column);
+  }
+  
+  /* Sticky column cell */
+  .sticky-column-cell {
+    position: sticky !important;
+    z-index: var(--sticky-cell-z-index) !important;
+    box-shadow: var(--shadow-sticky-column);
   }
   
   /* Sticky first column */
@@ -247,6 +287,45 @@
   .cell-content {
     @apply block w-full overflow-hidden text-ellipsis whitespace-nowrap;
     max-width: 100%; /* Đảm bảo không vượt quá width của cell */
+  }
+  
+  /* Sticky cell content styling */
+  .sticky-table-cell {
+    position: sticky;
+    background-color: var(--background);
+  }
+  
+  .sticky-cell-wrapper {
+    display: flex;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+  }
+  
+  .sticky-cell-content {
+    display: block;
+    max-width: 100%;
+    max-height: 2.5em; /* About 2 lines of text */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Hidden horizontal overflow */
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+  }
+  
+  /* Scrollbar styling for sticky cells */
+  .sticky-cell-content::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  .sticky-cell-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .sticky-cell-content::-webkit-scrollbar-thumb {
+    background-color: var(--primary-200);
+    border-radius: 20px;
   }
   
   /* Tooltip styling khi hover cell */
@@ -286,16 +365,29 @@
     @apply bg-muted/50;
   }
 
+  /* Ensure proper rendering in all browsers */
+  .fixed-header-table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  /* Force opaque backgrounds */
+  .sticky-column-header, 
+  .sticky-column-cell {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
   /* Add sticky column styles */
   .sticky-column-header {
     position: sticky !important;
     background-color: var(--muted) !important;
-    z-index: 30;
+    z-index: 100 !important; /* Higher than regular headers */
   }
   
   .sticky-column-cell {
     position: sticky !important;
-    z-index: 20;
+    z-index: 40 !important;
   }
   
   /* Shadow for sticky columns to create visual separation */
@@ -314,5 +406,20 @@
   
   .dark {
     --muted-alt: var(--muted-30);
+  }
+
+  /* Fix for data-table-container thead th */
+  .data-table-container thead th {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .data-table-container thead th.sticky-column-header {
+    z-index: 100 !important; /* Higher than regular headers */
+  }
+
+  .data-table-container tbody td.sticky-column-cell {
+    z-index: 40 !important;
   }
 }
