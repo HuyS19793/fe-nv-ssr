@@ -96,6 +96,12 @@
     "workplace": "職場",
     "chanel_id": "チャネルID",
     "slack_id": "Slack ID",
-    "tryAgain": "もう一度試す"
+    "tryAgain": "もう一度試す",
+    "selectAll": "すべて選択",
+    "selectRow": "行を選択",
+    "itemsSelected": "アイテムが選択されました",
+    "clearSelection": "選択をクリア",
+    "deleteSelected": "選択項目を削除",
+    "batchDeleteNotImplemented": "一括削除機能は後で実装される予定です"
   }
 }

@@ -4,54 +4,57 @@
 import { ColumnDef, Row } from '@tanstack/react-table'
 import { ScheduledJob } from '@/actions/schedule'
 import { useTranslations } from 'next-intl'
-import { ActionButtons } from './action-buttons'
 import { columnMapping, columnWidths, excludedFields } from './column-mapping'
+import { Checkbox } from '@/components/ui/checkbox'
 
 interface GetColumnsOptions {
-  onUpdateJob: (id: string, status: string) => Promise<void>
-  onEditJob: (id: string) => void
-  onDeleteJob: (id: string) => Promise<void>
-  isLoading: {
-    update: boolean
-    delete: boolean
-  }
+  isSelected: (job: ScheduledJob) => boolean
+  isAllSelected: () => boolean
+  toggleSelection: (job: ScheduledJob) => void
+  toggleSelectAll: () => void
 }
 
 /**
- * Creates column definitions for the scheduled jobs table
+ * Creates column definitions for the scheduled jobs table with selection
  */
 export function getTableColumns({
-  onUpdateJob,
-  onEditJob,
-  onDeleteJob,
-  isLoading,
+  isSelected,
+  isAllSelected,
+  toggleSelection,
+  toggleSelectAll,
 }: GetColumnsOptions): ColumnDef<ScheduledJob>[] {
   const t = useTranslations('Schedule')
 
-  // Create the actions column that will be fixed first
-  const actionsColumn: ColumnDef<ScheduledJob> = {
-    id: 'actions',
+  // Create the selection column that will be fixed first
+  const selectionColumn: ColumnDef<ScheduledJob> = {
+    id: 'select',
     meta: {
-      width: '120px',
-      minWidth: '100px',
-      maxWidth: '150px',
+      width: '50px',
+      minWidth: '40px',
+      maxWidth: '60px',
       isSticky: true, // Add this to indicate it's a sticky column
       stickyPosition: 0, // Position 0 (first)
     },
     header: () => (
-      <div className='text-right font-semibold'>{t('actions')}</div>
+      <div className='flex justify-center'>
+        <Checkbox
+          checked={isAllSelected()}
+          onCheckedChange={toggleSelectAll}
+          aria-label={t('selectAll')}
+        />
+      </div>
     ),
     cell: ({ row }: { row: Row<ScheduledJob> }) => {
       const job = row.original
 
       return (
-        <ActionButtons
-          job={job}
-          onUpdate={onUpdateJob}
-          onEdit={onEditJob}
-          onDelete={onDeleteJob}
-          isLoading={isLoading}
-        />
+        <div className='flex justify-center'>
+          <Checkbox
+            checked={isSelected(job)}
+            onCheckedChange={() => toggleSelection(job)}
+            aria-label={t('selectRow')}
+          />
+        </div>
       )
     },
   }
@@ -164,5 +167,5 @@ export function getTableColumns({
     })
 
   // Return columns in the desired order
-  return [actionsColumn, jobNameColumn, jobStatusColumn, ...otherColumns]
+  return [selectionColumn, jobNameColumn, jobStatusColumn, ...otherColumns]
 }

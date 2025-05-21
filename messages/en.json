@@ -96,6 +96,12 @@
     "workplace": "Workplace",
     "chanel_id": "Chanel ID",
     "slack_id": "Slack ID",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "selectAll": "Select all",
+    "selectRow": "Select row",
+    "itemsSelected": "items selected",
+    "clearSelection": "Clear selection",
+    "deleteSelected": "Delete selected",
+    "batchDeleteNotImplemented": "Batch delete functionality will be implemented later"
   }
 }
