@@ -82,13 +82,6 @@ export default async function SchedulePage({
 
   return (
     <div className='space-y-6 w-full max-w-full'>
-      <div>
-        <h1 className='text-2xl font-bold tracking-tight'>
-          {t('scheduleJob')}
-        </h1>
-        <p className='text-muted-foreground'>{t('scheduleJobDescription')}</p>
-      </div>
-
       <ServerScheduleTabs
         jobType={jobType}
         data={jobsData.results}
