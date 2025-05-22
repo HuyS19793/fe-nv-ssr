@@ -2,7 +2,11 @@
   "Common": {
     "loading": "読み込み中...",
     "error": "エラーが発生しました",
-    "noResults": "結果がありません"
+    "noResults": "結果がありません",
+    "refresh": "更新",
+    "refreshData": "データを更新",
+    "refreshingData": "データを更新中...",
+    "dataUpdated": "データが更新されました"
   },
   "Navigation": {
     "scheduleJob": "スケジュールジョブ",
@@ -116,6 +120,27 @@
     "clearAll": "すべてクリア",
     "applyingFilters": "フィルター適用中",
     "searchFields": "フィールドを検索...",
-    "removeFilter": "フィルターを削除"
+    "removeFilter": "フィルターを削除",
+    "newJob": "新規追加",
+    "addNewJob": "新規追加",
+    "uploadJobDescription": "CSVまたはExcelファイルをアップロードして、新しいスケジュールジョブを作成します。",
+    "submit": "提出",
+    "uploading": "アップロード中...",
+    "dragAndDropFile": "ここにファイルをドラッグ＆ドロップ",
+    "or": "または",
+    "clickToUpload": "クリックしてアップロード",
+    "acceptedFileTypes": "対応ファイル形式",
+    "maxFileSize": "最大ファイルサイズ",
+    "removeFile": "ファイルを削除",
+    "uploadSuccess": "アップロード成功",
+    "uploadError": "アップロード失敗",
+    "jobsCreatedSuccessfully": "ジョブが正常に作成されました",
+    "uploadFailed": "ファイルのアップロードに失敗しました",
+    "unexpectedError": "予期しないエラーが発生しました",
+    "invalidFileType": "無効なファイル形式です。CSVまたはExcelファイルをアップロードしてください。",
+    "fileSizeTooLarge": "ファイルサイズが{maxSize}の制限を超えています。",
+    "updatingJobList": "ジョブリストを更新中...",
+    "refreshData": "データを更新",
+    "refreshingData": "データを更新中..."
   }
 }

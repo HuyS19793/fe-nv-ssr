@@ -7,11 +7,15 @@ import { ServerDataTable } from '@/components/tables/server-data-table'
 import { getTableColumns } from './column-definitions'
 import { useTableSelection } from '@/hooks/use-table-selection'
 import { Button } from '@/components/ui/button'
-import { Trash2 } from 'lucide-react'
+import { Trash2, RefreshCw } from 'lucide-react'
 import { FilterDropdown } from '../filter/filter-dropdown'
 import { ActiveFilters } from '../filter/active-filters'
 import { useFilter } from '@/hooks/use-filter'
 import { FilterItem } from '@/types/filter'
+import { UploadJobModal } from '../upload/upload-job-modal'
+import { useRouter } from 'next/navigation'
+import { useState, useCallback } from 'react'
+import { toast } from '@/components/ui/toast'
 
 export type JobType = 'NAVI' | 'CVER'
 
@@ -41,6 +45,8 @@ export function ServerScheduleTable({
   filterItems = [],
 }: ServerScheduleTableProps) {
   const t = useTranslations('Schedule')
+  const router = useRouter()
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   // Use the selection hook
   const {
@@ -84,8 +90,42 @@ export function ServerScheduleTable({
     )
   }
 
+  // Handle manual refresh
+  const handleManualRefresh = useCallback(() => {
+    setIsRefreshing(true)
+    router.refresh()
+
+    // Reset the refreshing state after a short delay
+    setTimeout(() => {
+      setIsRefreshing(false)
+    }, 1000)
+  }, [router])
+
   return (
     <div className='space-y-4'>
+      {/* Table actions row */}
+      <div className='flex justify-between items-center'>
+        <div className='flex space-x-2'>
+          {/* Add upload modal component without callbacks */}
+          <UploadJobModal jobType={jobType} />
+
+          {/* Add refresh button */}
+          <Button
+            variant='outline'
+            size='icon'
+            onClick={handleManualRefresh}
+            disabled={isRefreshing}
+            title={t('refreshData')}>
+            <RefreshCw
+              className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`}
+            />
+            <span className='sr-only'>{t('refreshData')}</span>
+          </Button>
+        </div>
+
+        {/* Selection action buttons will go here when items are selected */}
+      </div>
+
       {/* Selection info and actions */}
       {selectionCount > 0 && (
         <div className='bg-muted p-3 rounded-md flex items-center justify-between'>

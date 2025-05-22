@@ -64,7 +64,7 @@ export function getTableColumns({
     accessorKey: 'job_name',
     id: 'job_name',
     meta: {
-      width: '180px', // Slightly reduced to make columns closer
+      width: '180px',
       minWidth: '180px',
       maxWidth: '380px',
       isSticky: true, // Mark as sticky
@@ -91,7 +91,7 @@ export function getTableColumns({
     id: 'job_status',
     meta: {
       width: '140px', // Slightly reduced to make columns closer
-      minWidth: '110px',
+      minWidth: '140px',
       maxWidth: '160px',
       isSticky: true, // Mark as sticky
       stickyPosition: 2, // Position 2 (third)

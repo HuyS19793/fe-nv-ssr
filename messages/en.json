@@ -2,7 +2,11 @@
   "Common": {
     "loading": "Loading...",
     "error": "An error occurred",
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "refresh": "Refresh",
+    "refreshData": "Refresh data",
+    "refreshingData": "Refreshing data...",
+    "dataUpdated": "Data updated"
   },
   "Navigation": {
     "scheduleJob": "Schedule Job",
@@ -116,6 +120,27 @@
     "clearAll": "Clear All",
     "applyingFilters": "Applying filters",
     "searchFields": "Search fields...",
-    "removeFilter": "Remove filter"
+    "removeFilter": "Remove filter",
+    "newJob": "New Job",
+    "addNewJob": "Add New Job",
+    "uploadJobDescription": "Upload a CSV or Excel file to create new scheduled jobs.",
+    "submit": "Submit",
+    "uploading": "Uploading...",
+    "dragAndDropFile": "Drag and drop file here",
+    "or": "or",
+    "clickToUpload": "click to upload",
+    "acceptedFileTypes": "Accepted file types",
+    "maxFileSize": "Maximum file size",
+    "removeFile": "Remove file",
+    "uploadSuccess": "Upload Successful",
+    "uploadError": "Upload Failed",
+    "jobsCreatedSuccessfully": "Jobs created successfully",
+    "uploadFailed": "Failed to upload file",
+    "unexpectedError": "An unexpected error occurred",
+    "invalidFileType": "Invalid file type. Please upload a CSV or Excel file.",
+    "fileSizeTooLarge": "File size exceeds the {maxSize} limit.",
+    "updatingJobList": "Updating job list...",
+    "refreshData": "Refresh data",
+    "refreshingData": "Refreshing data..."
   }
 }

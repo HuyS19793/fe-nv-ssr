@@ -8,6 +8,10 @@ import { getScheduledJobs } from '@/actions/schedule'
 import { parseTableParams } from '@/lib/url-utils'
 import { filtersToQueryParams, queryParamsToFilters } from '@/lib/filter-utils'
 
+// Force the page to be dynamic
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Schedule')
 
@@ -68,6 +72,14 @@ export default async function SchedulePage({
   // Convert URL parameters to filter objects for UI display
   const filterItems = queryParamsToFilters(new URLSearchParams(filterParams))
 
+  // Create a cache tag that includes the filters
+  const filterHash = Object.entries(filterParams)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => `${key}-${value}`)
+    .join('-')
+
+  const cacheTag = `scheduled-jobs-list${filterHash ? `-${filterHash}` : ''}`
+
   // Fetch data using server action with filters
   let jobsData
   try {
@@ -109,6 +121,9 @@ export default async function SchedulePage({
 
   return (
     <div className='space-y-6 w-full max-w-full'>
+      {/* Add a hidden div with data-cache-tag for more targeted revalidation */}
+      <div data-cache-tag={cacheTag} className='hidden' />
+
       <ServerScheduleTabs
         jobType={jobType}
         data={jobsData.results}
