@@ -102,6 +102,20 @@
     "itemsSelected": "items selected",
     "clearSelection": "Clear selection",
     "deleteSelected": "Delete selected",
-    "batchDeleteNotImplemented": "Batch delete functionality will be implemented later"
+    "batchDeleteNotImplemented": "Batch delete functionality will be implemented later",
+    "addFilter": "Add Filter",
+    "availableFilters": "Available Filters",
+    "selectField": "Select Field",
+    "selectedField": "Selected Field",
+    "filterValue": "Filter Value",
+    "enterFilterValue": "Enter value...",
+    "includeExclude": "Include/Exclude",
+    "include": "Include",
+    "exclude": "Exclude",
+    "not": "NOT",
+    "clearAll": "Clear All",
+    "applyingFilters": "Applying filters",
+    "searchFields": "Search fields...",
+    "removeFilter": "Remove filter"
   }
 }

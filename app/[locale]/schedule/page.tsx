@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toast'
 import { auth } from '@/lib/auth'
 import { getScheduledJobs } from '@/actions/schedule'
 import { parseTableParams } from '@/lib/url-utils'
+import { filtersToQueryParams, queryParamsToFilters } from '@/lib/filter-utils'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Schedule')
@@ -47,10 +48,36 @@ export default async function SchedulePage({
     }
   }
 
-  // Fetch data using server action
+  // Extract filter parameters from search params
+  const filterParams: Record<string, string> = {}
+
+  // These are the non-filter params we want to exclude
+  const nonFilterParams = ['page', 'limit', 'search', 'jobType']
+
+  // Extract filter parameters
+  Object.entries(resolvedSearchParams).forEach(([key, value]) => {
+    if (!nonFilterParams.includes(key) && value !== undefined) {
+      // If it's an array, use the first value
+      const paramValue = Array.isArray(value) ? value[0] : value
+      if (paramValue) {
+        filterParams[key] = paramValue
+      }
+    }
+  })
+
+  // Convert URL parameters to filter objects for UI display
+  const filterItems = queryParamsToFilters(new URLSearchParams(filterParams))
+
+  // Fetch data using server action with filters
   let jobsData
   try {
-    jobsData = await getScheduledJobs(jobType, page, limit, search)
+    jobsData = await getScheduledJobs(
+      jobType,
+      page,
+      limit,
+      search,
+      filterParams
+    )
   } catch (error) {
     console.error('Error fetching scheduled jobs:', error)
     // Return an error state that can be displayed
@@ -92,6 +119,7 @@ export default async function SchedulePage({
         }}
         totalCount={jobsData.count}
         searchValue={search}
+        filterItems={filterItems}
       />
       <Toaster />
     </div>

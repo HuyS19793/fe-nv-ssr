@@ -4,10 +4,11 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
-import { JobType, ServerScheduleTable } from './server-schedule-table'
+import { JobType, ServerScheduleTable } from './table/server-schedule-table'
 import { ScheduledJob } from '@/actions/schedule'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { createQueryString } from '@/lib/url-utils'
+import { FilterItem } from '@/types/filter'
 
 interface ServerScheduleTabsProps {
   jobType: JobType
@@ -19,6 +20,7 @@ interface ServerScheduleTabsProps {
   }
   totalCount: number
   searchValue: string
+  filterItems?: FilterItem[]
 }
 
 /**
@@ -31,6 +33,7 @@ export function ServerScheduleTabs({
   pagination,
   totalCount,
   searchValue,
+  filterItems = [],
 }: ServerScheduleTabsProps) {
   const t = useTranslations('Schedule')
   const router = useRouter()
@@ -80,6 +83,7 @@ export function ServerScheduleTabs({
         pagination={pagination}
         totalCount={totalCount}
         searchValue={searchValue}
+        filterItems={filterItems}
       />
     </div>
   )

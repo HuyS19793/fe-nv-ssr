@@ -69,13 +69,14 @@ export interface ScheduledJobUpdate {
 }
 
 /**
- * Fetch scheduled jobs from the API with server-side pagination and search
+ * Fetch scheduled jobs from the API with server-side pagination, search, and filtering
  */
 export async function getScheduledJobs(
   jobType: 'NAVI' | 'CVER',
   page: number = 1,
   limit: number = 20,
-  search: string = ''
+  search: string = '',
+  filters: Record<string, string> = {}
 ): Promise<ScheduledJobResponse> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL
   if (!baseUrl) {
@@ -83,15 +84,51 @@ export async function getScheduledJobs(
   }
   const apiUrl = `${baseUrl}/job/scheduled-job/`
 
-  // Use the fetchWithPagination utility
-  return fetchWithPagination<ScheduledJob>(
-    apiUrl,
-    page,
-    limit,
-    search,
-    { is_deleted: 'false', job_type: jobType },
-    { tag: `scheduledJobs-${jobType}`, revalidate: 60 }
-  )
+  // Create query parameters
+  const queryParams: Record<string, string> = {
+    is_deleted: 'false',
+    job_type: jobType,
+    page: page.toString(),
+    limit: limit.toString(),
+  }
+
+  // Add search parameter if provided
+  if (search) {
+    queryParams.search = search
+  }
+
+  // Add filter parameters
+  Object.entries(filters).forEach(([key, value]) => {
+    queryParams[key] = value
+  })
+
+  // Create a cache tag that includes filter hash for proper cache invalidation
+  const filterHash = Object.entries(filters)
+    .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
+    .map(([key, value]) => `${key}-${value}`)
+    .join('-')
+
+  const cacheTag = `scheduledJobs-${jobType}${
+    search ? `-search-${search}` : ''
+  }${filterHash ? `-filters-${filterHash}` : ''}`
+
+  // Use the fetchWithPagination utility with all parameters
+  try {
+    return await fetchWithPagination<ScheduledJob>(
+      apiUrl,
+      page,
+      limit,
+      search,
+      queryParams,
+      {
+        tag: cacheTag,
+        revalidate: 60,
+      }
+    )
+  } catch (error) {
+    console.error('Error fetching scheduled jobs with filters:', error)
+    throw error
+  }
 }
 
 /**

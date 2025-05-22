@@ -8,6 +8,10 @@ import { getTableColumns } from './column-definitions'
 import { useTableSelection } from '@/hooks/use-table-selection'
 import { Button } from '@/components/ui/button'
 import { Trash2 } from 'lucide-react'
+import { FilterDropdown } from '../filter/filter-dropdown'
+import { ActiveFilters } from '../filter/active-filters'
+import { useFilter } from '@/hooks/use-filter'
+import { FilterItem } from '@/types/filter'
 
 export type JobType = 'NAVI' | 'CVER'
 
@@ -21,11 +25,12 @@ interface ServerScheduleTableProps {
   }
   totalCount: number
   searchValue: string
+  filterItems?: FilterItem[]
 }
 
 /**
  * Server-side rendered table component for displaying scheduled jobs
- * with multi-selection capability
+ * with multi-selection capability and filtering
  */
 export function ServerScheduleTable({
   jobType,
@@ -33,6 +38,7 @@ export function ServerScheduleTable({
   pagination,
   totalCount,
   searchValue,
+  filterItems = [],
 }: ServerScheduleTableProps) {
   const t = useTranslations('Schedule')
 
@@ -50,6 +56,16 @@ export function ServerScheduleTable({
     idField: 'id',
   })
 
+  // Use the filter hook with initial filters
+  const {
+    filters,
+    addFilter,
+    removeFilter,
+    clearFilters,
+    filterCount,
+    isLoading,
+  } = useFilter()
+
   // Get table columns configuration
   const columns = getTableColumns({
     isSelected,
@@ -58,10 +74,9 @@ export function ServerScheduleTable({
     toggleSelectAll,
   })
 
-  // Placeholder for future batch delete function
+  // Placeholder for batch delete function
   const handleBatchDelete = () => {
     console.log('Selected IDs for deletion:', getSelectedIds())
-    // This will be implemented later
     alert(
       `${t('batchDeleteNotImplemented')}. ${selectionCount} ${t(
         'itemsSelected'
@@ -94,6 +109,20 @@ export function ServerScheduleTable({
         </div>
       )}
 
+      {/* Active filters display */}
+      <ActiveFilters
+        filters={filters}
+        onRemoveFilter={removeFilter}
+        onClearFilters={clearFilters}
+      />
+
+      {/* Show loading indicator when applying filters */}
+      {isLoading && (
+        <div className='py-2 text-sm text-muted-foreground'>
+          {t('applyingFilters')}...
+        </div>
+      )}
+
       {/* Main data table */}
       <ServerDataTable
         columns={columns}
@@ -103,6 +132,9 @@ export function ServerScheduleTable({
         searchPlaceholder={t('searchJobs')}
         searchValue={searchValue}
         maxHeight='70vh'
+        filterComponent={
+          <FilterDropdown onAddFilter={addFilter} filterCount={filterCount} />
+        }
       />
     </div>
   )

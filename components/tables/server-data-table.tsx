@@ -51,6 +51,7 @@ interface ServerDataTableProps<TData> {
   searchPlaceholder?: string
   searchValue?: string
   maxHeight?: string | number
+  filterComponent?: React.ReactNode
 }
 
 export function ServerDataTable<TData>({
@@ -61,6 +62,7 @@ export function ServerDataTable<TData>({
   searchPlaceholder = 'Search...',
   searchValue = '',
   maxHeight = '70vh', // Default max height
+  filterComponent,
 }: ServerDataTableProps<TData>) {
   const pathname = usePathname()
   const tableContainerRef = useRef<HTMLDivElement>(null)
@@ -161,8 +163,9 @@ export function ServerDataTable<TData>({
 
   return (
     <div className='space-y-4 w-full'>
-      {/* Search field */}
-      <div className='flex items-center'>
+      {/* Search field and filter button in the same row */}
+      <div className='flex items-center justify-between gap-4'>
+        {/* Search form on the left */}
         <form onSubmit={handleSearch} className='relative flex-1 max-w-sm'>
           <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
           <Input
@@ -172,6 +175,9 @@ export function ServerDataTable<TData>({
             className='pl-8'
           />
         </form>
+
+        {/* Filter component on the right */}
+        {filterComponent}
       </div>
 
       {/* Table Container with proper nesting for fixed header and scrolling */}
