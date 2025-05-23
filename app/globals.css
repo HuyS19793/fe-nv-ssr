@@ -401,3 +401,8 @@
 .animate-fade-in {
   animation: fadeIn 0.2s ease-out;
 }
+
+/* Fix dropdown menu positioning */
+.dropdown-menu-content {
+  z-index: 1000 !important;
+}
