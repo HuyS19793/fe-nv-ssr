@@ -422,4 +422,14 @@
   .data-table-container tbody td.sticky-column-cell {
     z-index: 40 !important;
   }
+
+  /* Selection cell styles */
+  .selection-cell {
+    cursor: pointer;
+    padding: 0.5rem !important; /* Override default padding */
+  }
+
+  .selection-cell:hover {
+    background-color: var(--primary-50) !important;
+  }
 }

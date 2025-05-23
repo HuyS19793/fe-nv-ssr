@@ -2,7 +2,7 @@
 'use server'
 
 import { auth } from '@/lib/auth'
-import { revalidateTag } from 'next/cache'
+import { revalidateTag, revalidatePath } from 'next/cache'
 import { fetchWithPagination } from './server-table'
 
 // Type definitions
@@ -263,6 +263,52 @@ export async function createScheduledJob(
     return await response.json()
   } catch (error) {
     console.error('Failed to create scheduled job:', error)
+    throw error
+  }
+}
+
+/**
+ * Delete multiple scheduled jobs
+ * @param ids Array of job IDs to delete
+ */
+export async function deleteScheduledJobs(ids: string[]): Promise<void> {
+  const user = await auth.getCurrentUser()
+  if (!user || !user.access) {
+    throw new Error('Not authenticated')
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL
+  if (!baseUrl) {
+    throw new Error('API URL not configured')
+  }
+
+  const apiUrl = `${baseUrl}/job/scheduled-job/delete-multi/`
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.access}`,
+      },
+      body: JSON.stringify({ scheduled_job_ids: ids }),
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => 'Unknown error')
+      throw new Error(
+        `Error deleting scheduled jobs: ${response.status} ${errorText}`
+      )
+    }
+
+    // Revalidate all scheduled job tags to ensure consistent data
+    revalidateTag(`scheduledJobs-NAVI`)
+    revalidateTag(`scheduledJobs-CVER`)
+    revalidateTag('scheduled-jobs-list')
+    revalidatePath('/schedule', 'layout')
+  } catch (error) {
+    console.error('Failed to delete scheduled jobs:', error)
     throw error
   }
 }

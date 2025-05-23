@@ -141,6 +141,7 @@
     "fileSizeTooLarge": "ファイルサイズが{maxSize}の制限を超えています。",
     "updatingJobList": "ジョブリストを更新中...",
     "refreshData": "データを更新",
-    "refreshingData": "データを更新中..."
+    "refreshingData": "データを更新中...",
+    "deleting": "削除中..."
   }
 }

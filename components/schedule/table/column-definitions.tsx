@@ -29,18 +29,21 @@ export function getTableColumns({
   const selectionColumn: ColumnDef<ScheduledJob> = {
     id: 'select',
     meta: {
-      width: '40px',
-      minWidth: '40px',
-      maxWidth: '60px',
-      isSticky: true, // Add this to indicate it's a sticky column
-      stickyPosition: 0, // Position 0 (first)
+      width: '60px', // Increased width
+      minWidth: '60px', // Increased min width
+      maxWidth: '80px', // Increased max width
+      isSticky: true,
+      stickyPosition: 0,
     },
     header: () => (
-      <div className='flex justify-center'>
+      <div className='flex justify-center p-1'>
+        {' '}
+        {/* Added padding for larger hit area */}
         <Checkbox
           checked={isAllSelected()}
           onCheckedChange={toggleSelectAll}
           aria-label={t('selectAll')}
+          className='h-5 w-5' // Explicitly set size
         />
       </div>
     ),
@@ -48,11 +51,14 @@ export function getTableColumns({
       const job = row.original
 
       return (
-        <div className='flex justify-center'>
+        <div className='flex justify-center p-1'>
+          {' '}
+          {/* Added padding for larger hit area */}
           <Checkbox
             checked={isSelected(job)}
             onCheckedChange={() => toggleSelection(job)}
             aria-label={t('selectRow')}
+            className='h-5 w-5' // Explicitly set size
           />
         </div>
       )

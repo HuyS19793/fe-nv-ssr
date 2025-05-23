@@ -18,6 +18,7 @@ import {
 import { FileUploadArea } from './file-upload-area'
 import { toast } from '@/components/ui/toast'
 import { uploadScheduledJobFile } from '@/actions/uploadJob'
+import { useScheduleRefresh } from '@/hooks/use-schedule-refresh'
 
 interface UploadJobModalProps {
   jobType: 'NAVI' | 'CVER'
@@ -36,43 +37,11 @@ export function UploadJobModal({ jobType }: UploadJobModalProps) {
   const [errors, setErrors] = useState<{ type?: string; size?: string }>({})
   const [isOpen, setIsOpen] = useState(false)
 
-  // Create function to forcefully refresh the data with the current filters
-  const refreshDataWithFilters = async () => {
-    try {
-      // Get current URL search params to extract filters
-      const searchParams = new URLSearchParams(window.location.search)
-      const filterParams: Record<string, string> = {}
-
-      // Extract filter parameters (anything that's not page, limit, search, jobType)
-      const nonFilterParams = ['page', 'limit', 'search', 'jobType']
-
-      searchParams.forEach((value, key) => {
-        if (!nonFilterParams.includes(key)) {
-          filterParams[key] = value
-        }
-      })
-
-      // Call our API endpoint with specific filter info
-      await fetch('/api/refresh-schedule', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          jobType,
-          filters: filterParams,
-          timestamp: Date.now(), // Cache busting
-        }),
-      })
-
-      // Force router refresh
-      router.refresh()
-    } catch (error) {
-      console.error('Failed to refresh data:', error)
-      // Still try to refresh the UI even if the API call fails
-      router.refresh()
-    }
-  }
+  // Add the refresh hook
+  const { refresh } = useScheduleRefresh({
+    jobType,
+    showErrorToast: true, // Only show error toasts
+  })
 
   // Validate file
   const validateFile = (fileToValidate: File) => {
@@ -165,8 +134,8 @@ export function UploadJobModal({ jobType }: UploadJobModalProps) {
         // Reset state
         resetState()
 
-        // Force refresh with the current filters
-        await refreshDataWithFilters()
+        // Use the new refresh mechanism instead of the old one
+        await refresh()
       } else {
         toast({
           title: t('uploadError'),

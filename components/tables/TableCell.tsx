@@ -74,6 +74,8 @@ export function TableCell({
       className={cn(
         'table-cell fixed-width-cell',
         isSticky && 'sticky-table-cell',
+        // Add special styling for selection cells
+        (props as any)['data-column-id'] === 'select' && 'selection-cell',
         className
       )}
       style={baseStyle}

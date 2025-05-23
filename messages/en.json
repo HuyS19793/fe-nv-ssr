@@ -141,6 +141,7 @@
     "fileSizeTooLarge": "File size exceeds the {maxSize} limit.",
     "updatingJobList": "Updating job list...",
     "refreshData": "Refresh data",
-    "refreshingData": "Refreshing data..."
+    "refreshingData": "Refreshing data...",
+    "deleting": "Deleting..."
   }
 }
