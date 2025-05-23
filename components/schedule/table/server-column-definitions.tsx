@@ -162,7 +162,7 @@ export function getServerTableColumns({
       return (
         !pinnedFields.includes(key) &&
         !excludedFields.includes(key) &&
-        columnVisibility[key] === true
+        columnVisibility[key]
       )
     })
     .map(([key, header]) => {

@@ -8,7 +8,7 @@ import { getServerTableColumns } from './server-column-definitions'
 import { useTableSelection } from '@/hooks/use-table-selection'
 import { useColumnVisibility } from '@/hooks/use-column-visibility'
 import { Button } from '@/components/ui/button'
-import { Trash2, RefreshCw } from 'lucide-react'
+import { Trash2, RefreshCw, Settings, Eye, EyeOff } from 'lucide-react'
 import { FilterDropdown } from '../filter/filter-dropdown'
 import { ActiveFilters } from '../filter/active-filters'
 import { useFilter } from '@/hooks/use-filter'
@@ -18,6 +18,15 @@ import { toast } from '@/components/ui/toast'
 import { DeleteConfirmationDialog } from '../delete-confirmation-dialog'
 import { useScheduleRefresh } from '@/hooks/use-schedule-refresh'
 import { DownloadAllButton } from '../download-all-button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
+import { cn } from '@/lib/utils'
 
 export type JobType = 'NAVI' | 'CVER'
 
@@ -112,6 +121,18 @@ export function EnhancedServerScheduleTable({
 
   // Column visibility management
   const { columnVisibility } = useColumnVisibility({ jobType })
+  const [customColumnVisibility, setCustomColumnVisibility] = useState<
+    Record<string, boolean>
+  >({})
+
+  // Merge default and custom visibility
+  const finalColumnVisibility = useMemo(
+    () => ({
+      ...columnVisibility,
+      ...customColumnVisibility,
+    }),
+    [columnVisibility, customColumnVisibility]
+  )
 
   // Refresh functionality
   const { refresh, isRefreshing } = useScheduleRefresh({
@@ -155,7 +176,7 @@ export function EnhancedServerScheduleTable({
         isAllSelected,
         toggleSelection,
         toggleSelectAll,
-        columnVisibility,
+        columnVisibility: finalColumnVisibility,
         translations,
       }),
     [
@@ -163,10 +184,18 @@ export function EnhancedServerScheduleTable({
       isAllSelected,
       toggleSelection,
       toggleSelectAll,
-      columnVisibility,
+      finalColumnVisibility,
       translations,
     ]
   )
+
+  // Toggle column visibility
+  const toggleColumnVisibility = (columnKey: string) => {
+    setCustomColumnVisibility((prev) => ({
+      ...prev,
+      [columnKey]: !prev[columnKey],
+    }))
+  }
 
   // Batch delete handler
   const handleBatchDelete = () => {
@@ -204,6 +233,26 @@ export function EnhancedServerScheduleTable({
     }
   }
 
+  // Get visible columns for column selector
+  const availableColumns = useMemo(() => {
+    const coreColumns = ['job_name', 'job_status']
+    return Object.entries(columnVisibility)
+      .filter(([key]) => !['select'].includes(key))
+      .map(([key, defaultVisible]) => ({
+        key,
+        label: translations[key] || key,
+        visible: customColumnVisibility[key] ?? defaultVisible,
+        canToggle: !coreColumns.includes(key),
+      }))
+      .sort((a, b) => {
+        if (coreColumns.includes(a.key) && !coreColumns.includes(b.key))
+          return -1
+        if (!coreColumns.includes(a.key) && coreColumns.includes(b.key))
+          return 1
+        return a.label.localeCompare(b.label)
+      })
+  }, [columnVisibility, customColumnVisibility, translations])
+
   return (
     <div className='space-y-4 w-full'>
       {/* Table controls */}
@@ -223,11 +272,58 @@ export function EnhancedServerScheduleTable({
             {t('refreshData')}
           </Button>
 
+          {/* Add Download All Button */}
           <DownloadAllButton
             jobType={jobType}
             disabled={isRefreshing || isLoading}
             showText={true}
           />
+
+          {/* Column visibility selector */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant='outline'
+                size='sm'
+                className='flex items-center gap-2'>
+                <Settings className='h-4 w-4' />
+                Columns ({availableColumns.filter((col) => col.visible).length})
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align='end'
+              className='w-64 max-h-96 overflow-y-auto'>
+              <DropdownMenuLabel>Show/Hide Columns</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {availableColumns.map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.key}
+                  checked={column.visible}
+                  onCheckedChange={() =>
+                    column.canToggle && toggleColumnVisibility(column.key)
+                  }
+                  disabled={!column.canToggle}
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2',
+                    !column.canToggle && 'opacity-75'
+                  )}>
+                  <div className='flex items-center gap-2 flex-1'>
+                    {column.visible ? (
+                      <Eye className='h-3 w-3' />
+                    ) : (
+                      <EyeOff className='h-3 w-3' />
+                    )}
+                    <span className='truncate'>{column.label}</span>
+                    {!column.canToggle && (
+                      <span className='text-xs text-muted-foreground'>
+                        (core)
+                      </span>
+                    )}
+                  </div>
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <div className='flex items-center gap-2'>
