@@ -8,7 +8,6 @@ import { notFound } from 'next/navigation'
 import { hasLocale } from 'next-intl'
 import { routing } from '@/i18n/routing'
 import { getMessages } from 'next-intl/server'
-import { isAuthenticated } from '@/lib/auth'
 import '../globals.css'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { QueryProvider } from '@/components/providers/query-provider'
@@ -46,9 +45,6 @@ export default async function LocaleLayout({
   // Get messages for the current locale
   const messages = await getMessages()
 
-  // Check if the user is logged in using our auth utility
-  const isLoggedIn = await isAuthenticated()
-
   // Extract the current path from children or URL
   // to determine if we're on a login page
   const isLoginPage =
@@ -67,11 +63,7 @@ export default async function LocaleLayout({
             disableTransitionOnChange>
             <QueryProvider>
               <AuthProvider>
-                {isLoggedIn && !isLoginPage ? (
-                  <Layout>{children}</Layout>
-                ) : (
-                  children
-                )}
+                {!isLoginPage ? <Layout>{children}</Layout> : children}
               </AuthProvider>
             </QueryProvider>
           </ThemeProvider>

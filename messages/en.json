@@ -43,6 +43,7 @@
     "cadNavigator": "CAD Navigator",
     "cVer": "CVer",
     "searchJobs": "Search jobs...",
+    "searchPlaceholder": "Search jobs...",
     "errorFetchingData": "Error fetching schedule data. Please try again.",
     "actions": "Actions",
     "deleteJobConfirmation": "Are you sure you want to delete this job?",
@@ -149,6 +150,8 @@
     "downloadError": "Download Failed",
     "downloadInProgress": "Preparing Download...",
     "fileDownloadedSuccessfully": "CSV file has been downloaded successfully",
-    "preparingDownload": "Preparing your CSV file for download..."
+    "preparingDownload": "Preparing your CSV file for download...",
+    "confirmDelete": "Confirm Delete",
+    "deleteConfirmation": "Are you sure you want to delete this job?"
   }
 }

@@ -60,8 +60,14 @@ export async function middleware(request: NextRequest) {
     // Build login URL with locale
     const loginUrl = new URL(`/${locale}/login`, request.url)
 
-    // Add the full path as callback URL
-    loginUrl.searchParams.set('callbackUrl', pathname)
+    // Add the full path as callback URL if it's not already a login page
+    // and if we're not already on a login page
+    if (
+      !pathname.includes('/login') &&
+      !request.nextUrl.pathname.includes('/login')
+    ) {
+      loginUrl.searchParams.set('callbackUrl', pathname)
+    }
 
     return NextResponse.redirect(loginUrl)
   }

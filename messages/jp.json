@@ -43,6 +43,7 @@
     "cadNavigator": "CADナビゲーター",
     "cVer": "CVer",
     "searchJobs": "ジョブを検索...",
+    "searchPlaceholder": "ジョブを検索...",
     "errorFetchingData": "スケジュールデータの取得中にエラーが発生しました。もう一度お試しください。",
     "actions": "アクション",
     "deleteJobConfirmation": "このジョブを削除してもよろしいですか？",
@@ -149,6 +150,8 @@
     "downloadError": "ダウンロード失敗",
     "downloadInProgress": "ダウンロード準備中...",
     "fileDownloadedSuccessfully": "CSVファイルのダウンロードが正常に完了しました",
-    "preparingDownload": "CSVファイルのダウンロードを準備しています..."
+    "preparingDownload": "CSVファイルのダウンロードを準備しています...",
+    "confirmDelete": "削除の確認",
+    "deleteConfirmation": "このジョブを削除してもよろしいですか？"
   }
 }

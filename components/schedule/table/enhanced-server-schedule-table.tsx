@@ -17,6 +17,7 @@ import { toast } from '@/components/ui/toast'
 import { DeleteConfirmationDialog } from '../delete-confirmation-dialog'
 import { useScheduleRefresh } from '@/hooks/use-schedule-refresh'
 import { DownloadAllButton } from '../download-all-button'
+import { cn } from '@/lib/utils'
 
 export type JobType = 'NAVI' | 'CVER'
 
@@ -57,7 +58,6 @@ export function EnhancedServerScheduleTable({
 }: EnhancedServerScheduleTableProps) {
   const t = useTranslations('Schedule')
 
-  // Create translations object
   const translations = useMemo<Translations>(
     () => ({
       selectAll: t('selectAll'),
@@ -151,17 +151,9 @@ export function EnhancedServerScheduleTable({
         isAllSelected,
         toggleSelection,
         toggleSelectAll,
-        jobType,
         translations,
       }),
-    [
-      isSelected,
-      isAllSelected,
-      toggleSelection,
-      toggleSelectAll,
-      jobType,
-      translations,
-    ]
+    [isSelected, isAllSelected, toggleSelection, toggleSelectAll, translations]
   )
 
   // Batch delete handler
@@ -219,6 +211,7 @@ export function EnhancedServerScheduleTable({
             {t('refreshData')}
           </Button>
 
+          {/* Add Download All Button */}
           <DownloadAllButton
             jobType={jobType}
             disabled={isRefreshing || isLoading}
@@ -231,55 +224,37 @@ export function EnhancedServerScheduleTable({
         </div>
       </div>
 
-      {/* Selection info bar */}
-      {selectionCount > 0 && (
-        <div className='bg-primary/5 border border-primary/20 rounded-lg p-3 flex flex-wrap items-center justify-between gap-2 animate-fade-in'>
-          <div className='flex items-center gap-2'>
-            <span className='font-medium text-primary'>
-              {selectionCount} {t('itemsSelected')}
-            </span>
-          </div>
-          <div className='flex items-center gap-2'>
-            <Button variant='outline' size='sm' onClick={clearSelection}>
-              {t('clearSelection')}
-            </Button>
-            <Button
-              variant='destructive'
-              size='sm'
-              onClick={handleBatchDelete}
-              disabled={isDeleting}
-              className='flex items-center gap-1'>
-              <Trash2 className='h-4 w-4' />
-              {t('deleteSelected')}
-            </Button>
-          </div>
-        </div>
-      )}
-
       {/* Active filters */}
-      <ActiveFilters
-        filters={filters}
-        onRemoveFilter={removeFilter}
-        onClearFilters={clearFilters}
-      />
-
-      {/* Loading indicator */}
-      {(isLoading || isRefreshing) && (
-        <div className='py-2 text-sm text-muted-foreground flex items-center gap-2'>
-          <RefreshCw className='h-4 w-4 animate-spin' />
-          {isLoading ? t('applyingFilters') : t('refreshingData')}
-        </div>
+      {filters.length > 0 && (
+        <ActiveFilters
+          filters={filters}
+          onRemoveFilter={removeFilter}
+          onClearFilters={clearFilters}
+        />
       )}
 
-      {/* Use ServerDataTable */}
+      {/* Data table */}
       <ServerDataTable
         columns={columns}
         data={data}
         pagination={pagination}
         totalCount={totalCount}
-        searchPlaceholder={t('searchJobs')}
         searchValue={searchValue}
-        maxHeight='calc(100vh - 280px)'
+        searchPlaceholder={t('searchPlaceholder')}
+        maxHeight='calc(100vh - 16rem)'
+        filterComponent={
+          <div className='flex items-center gap-2'>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={handleBatchDelete}
+              disabled={selectionCount === 0}
+              className='flex items-center gap-2'>
+              <Trash2 className='h-4 w-4' />
+              {t('deleteSelected')}
+            </Button>
+          </div>
+        }
       />
 
       {/* Delete confirmation dialog */}
@@ -287,8 +262,8 @@ export function EnhancedServerScheduleTable({
         isOpen={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
         onConfirm={handleConfirmDelete}
-        count={selectionCount}
         isDeleting={isDeleting}
+        selectedCount={selectionCount}
       />
     </div>
   )

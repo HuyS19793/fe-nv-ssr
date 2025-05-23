@@ -6,14 +6,11 @@ import { columnMapping } from './column-mapping'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
 
-export type JobType = 'NAVI' | 'CVER'
-
 interface GetServerColumnsOptions {
   isSelected: (job: ScheduledJob) => boolean
   isAllSelected: () => boolean
   toggleSelection: (job: ScheduledJob) => void
   toggleSelectAll: () => void
-  jobType: JobType // Add jobType to filter columns
   translations: {
     [key: string]: string
   }
@@ -21,14 +18,12 @@ interface GetServerColumnsOptions {
 
 /**
  * Creates column definitions for ServerDataTable with 3 sticky columns
- * Columns are filtered based on job type (NAVI vs CVER)
  */
 export function getServerTableColumns({
   isSelected,
   isAllSelected,
   toggleSelection,
   toggleSelectAll,
-  jobType,
   translations: t,
 }: GetServerColumnsOptions): ColumnDef<ScheduledJob>[] {
   // Selection column - sticky first (56px)
@@ -116,106 +111,19 @@ export function getServerTableColumns({
     ),
     cell: ({ row }: { row: Row<ScheduledJob> }) => {
       const value = row.getValue('job_status') as string
-      const getStatusStyle = (status: string) => {
-        switch (status?.toLowerCase()) {
-          case 'success':
-          case 'completed':
-          case 'finish':
-            return 'bg-emerald-50 text-emerald-700 border-emerald-200 ring-emerald-600/20'
-          case 'failed':
-          case 'error':
-          case 'fail':
-            return 'bg-red-50 text-red-700 border-red-200 ring-red-600/20'
-          case 'running':
-          case 'processing':
-            return 'bg-blue-50 text-blue-700 border-blue-200 ring-blue-600/20'
-          case 'pending':
-          case 'waiting':
-            return 'bg-amber-50 text-amber-700 border-amber-200 ring-amber-600/20'
-          default:
-            return 'bg-gray-50 text-gray-700 border-gray-200 ring-gray-600/20'
-        }
-      }
       return (
-        <div className='flex justify-center items-center px-2 py-2 h-full'>
+        <div className='flex items-center justify-center px-3 py-2 h-full'>
           <div
-            className={cn(
-              'inline-flex items-center px-2 py-1 rounded-full border text-xs font-semibold uppercase tracking-wide ring-1 ring-inset transition-all duration-200',
-              getStatusStyle(value)
-            )}>
-            {value || 'N/A'}
+            className='font-medium text-sm text-foreground truncate max-w-full'
+            title={value}>
+            {value}
           </div>
         </div>
       )
     },
   }
 
-  // Define job type specific visible columns
-  const getVisibleColumns = (jobType: JobType): string[] => {
-    const commonColumns = [
-      'username',
-      'setting_id',
-      'status',
-      'modified',
-      'scheduler_weekday',
-      'scheduler_time',
-      'time',
-      'media',
-      'redownload_type',
-      'redownload',
-      'which_process',
-      'cube_off',
-      'conmane_off',
-    ]
-
-    if (jobType === 'CVER') {
-      return [
-        ...commonColumns,
-        'upload',
-        'upload_opemane',
-        'opemane',
-        'media_master_update',
-        'master_update_redownload_type',
-        'master_update_redownload',
-        'split_medias',
-        'split_days',
-        'skip_to',
-        'drive_folder',
-        'old_drive_folder',
-        'master_account',
-        'workplace',
-        'chanel_id',
-        'slack_id',
-      ]
-    }
-
-    // NAVI columns
-    return [
-      ...commonColumns,
-      'external_linked',
-      'is_maintaining',
-      'cad_inform',
-      'conmane_confirm',
-      'group_by',
-      'cad_id',
-      'wait_time',
-      'spreadsheet_id',
-      'spreadsheet_sheet',
-      'drive_folder',
-      'old_drive_folder',
-      'custom_info',
-      'master_account',
-      'use_api',
-      'workplace',
-      'chanel_id',
-      'slack_id',
-    ]
-  }
-
-  // Get visible columns for current job type
-  const visibleColumns = getVisibleColumns(jobType)
-
-  // Generate other columns (non-sticky) based on job type
+  // Generate other columns (non-sticky)
   const otherColumns: ColumnDef<ScheduledJob>[] = Object.entries(columnMapping)
     .filter(([key]) => {
       const pinnedFields = ['job_name', 'job_status']
@@ -227,11 +135,7 @@ export function getServerTableColumns({
         'media_off',
         'media_master_update_off',
       ]
-      return (
-        !pinnedFields.includes(key) &&
-        !excludedFields.includes(key) &&
-        visibleColumns.includes(key)
-      )
+      return !pinnedFields.includes(key) && !excludedFields.includes(key)
     })
     .map(([key, header]) => {
       // Default width for other columns
