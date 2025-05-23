@@ -4,7 +4,8 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
-import { JobType, ServerScheduleTable } from './table/server-schedule-table'
+import { JobType } from './table/enhanced-server-schedule-table'
+import { EnhancedServerScheduleTable } from './table/enhanced-server-schedule-table'
 import { ScheduledJob } from '@/actions/schedule'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { createQueryString } from '@/lib/url-utils'
@@ -25,7 +26,7 @@ interface ServerScheduleTabsProps {
 
 /**
  * Server-side rendered tabs component for switching between job types
- * Uses URL-based navigation for preserving tab state during page refresh
+ * Now uses enhanced table with sticky headers and pinned columns
  */
 export function ServerScheduleTabs({
   jobType,
@@ -44,40 +45,41 @@ export function ServerScheduleTabs({
   const handleTabChange = (newJobType: JobType) => {
     if (newJobType === jobType) return
 
-    // Create a new URL with the new job type and reset page to 1
     const queryString = createQueryString(searchParams, {
       jobType: newJobType,
-      page: 1, // Reset to first page when changing tabs
+      page: 1,
     })
     router.push(`${pathname}${queryString}`)
   }
 
   return (
     <div className='space-y-4'>
+      {/* Tab navigation */}
       <div className='border-b flex'>
         <button
           onClick={() => handleTabChange('NAVI')}
           className={cn(
-            'px-4 py-2 border-b-2 transition-colors',
+            'px-6 py-3 border-b-2 transition-all duration-200 font-medium',
             jobType === 'NAVI'
-              ? 'border-primary text-primary font-medium'
-              : 'border-transparent hover:border-muted-foreground/40'
+              ? 'border-primary text-primary bg-primary/5'
+              : 'border-transparent hover:border-muted-foreground/40 hover:text-foreground'
           )}>
           {t('cadNavigator')}
         </button>
         <button
           onClick={() => handleTabChange('CVER')}
           className={cn(
-            'px-4 py-2 border-b-2 transition-colors',
+            'px-6 py-3 border-b-2 transition-all duration-200 font-medium',
             jobType === 'CVER'
-              ? 'border-primary text-primary font-medium'
-              : 'border-transparent hover:border-muted-foreground/40'
+              ? 'border-primary text-primary bg-primary/5'
+              : 'border-transparent hover:border-muted-foreground/40 hover:text-foreground'
           )}>
           {t('cVer')}
         </button>
       </div>
 
-      <ServerScheduleTable
+      {/* Enhanced table */}
+      <EnhancedServerScheduleTable
         jobType={jobType}
         data={data}
         pagination={pagination}

@@ -1,0 +1,153 @@
+/* Enhanced Table Styles */
+.enhanced-sticky-table {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--background);
+}
+
+.table-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.table-scroll-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Fixed header styles */
+.fixed-header-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.enhanced-sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Pinned column styles */
+.enhanced-pinned-header {
+  background-color: var(--background);
+  box-shadow: 2px 0 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.enhanced-pinned-column {
+  background-color: inherit;
+  box-shadow: 2px 0 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific pinned column styles */
+.pinned-select {
+  background-color: var(--background);
+  z-index: 100;
+}
+
+.pinned-actions {
+  background-color: var(--background);
+  z-index: 99;
+}
+
+.pinned-name {
+  background-color: var(--background);
+  z-index: 98;
+}
+
+.pinned-status {
+  background-color: var(--background);
+  z-index: 97;
+}
+
+/* Row styles */
+.table-row {
+  transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+  background-color: var(--accent);
+}
+
+.table-row-even {
+  background-color: var(--background);
+}
+
+.table-row-odd {
+  background-color: var(--muted);
+}
+
+/* Cell styles */
+.table-header-cell {
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  text-align: left;
+  color: var(--foreground);
+  background-color: var(--background);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.enhanced-table-cell {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+/* Action button styles */
+.enhanced-action-button {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.enhanced-action-button:hover {
+  opacity: 1;
+}
+
+/* Status badge styles */
+.enhanced-status-badge {
+  font-weight: 500;
+  letter-spacing: 0.025em;
+}
+
+/* Animation for selection bar */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* CSS Variables for sticky cell backgrounds */
+:root {
+  --sticky-cell-even-bg: var(--background);
+  --sticky-cell-odd-bg: var(--muted);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .table-header-cell,
+  .enhanced-table-cell {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .enhanced-sticky-table {
+    border-radius: 0;
+  }
+} 

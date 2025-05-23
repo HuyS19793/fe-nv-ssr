@@ -13,6 +13,7 @@ import '../globals.css'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { QueryProvider } from '@/components/providers/query-provider'
 import { AuthProvider } from '@/contexts/auth-context'
+import '@/styles/enhanced-table.css'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

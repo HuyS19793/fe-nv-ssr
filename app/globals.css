@@ -432,4 +432,187 @@
   .selection-cell:hover {
     background-color: var(--primary-50) !important;
   }
+
+  /* Enhanced sticky table container */
+  .enhanced-sticky-table {
+    @apply relative w-full overflow-hidden rounded-lg border border-border;
+    --sticky-offset-select: 0px;
+    --sticky-offset-actions: 60px;
+    --sticky-offset-name: 180px;
+    --sticky-offset-status: 400px;
+  }
+
+  /* Enhanced sticky header */
+  .enhanced-sticky-header {
+    @apply sticky top-0 z-50;
+    background: linear-gradient(to bottom, 
+      var(--background) 0%, 
+      var(--background) 90%, 
+      transparent 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Enhanced pinned columns */
+  .enhanced-pinned-column {
+    position: sticky !important;
+    z-index: 40;
+    background: var(--background);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  /* Specific pinned column positions */
+  .pinned-select {
+    left: var(--sticky-offset-select) !important;
+    z-index: 45 !important;
+  }
+
+  .pinned-actions {
+    left: var(--sticky-offset-actions) !important;
+    z-index: 44 !important;
+  }
+
+  .pinned-name {
+    left: var(--sticky-offset-name) !important;
+    z-index: 43 !important;
+  }
+
+  .pinned-status {
+    left: var(--sticky-offset-status) !important;
+    z-index: 42 !important;
+  }
+
+  /* Enhanced header cells for pinned columns */
+  .enhanced-pinned-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    background: linear-gradient(135deg, 
+      var(--primary-50) 0%, 
+      var(--background) 100%);
+    border-right: 2px solid var(--primary-200);
+    box-shadow: 2px 0 4px -2px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Enhanced cell styling */
+  .enhanced-table-cell {
+    @apply relative overflow-hidden;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .enhanced-table-cell:hover {
+    background-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  /* Enhanced action buttons */
+  .enhanced-action-button {
+    @apply transition-all duration-200 hover:scale-110 focus:scale-110;
+    @apply rounded-md p-1.5 hover:bg-accent focus:bg-accent;
+  }
+
+  /* Enhanced status badges */
+  .enhanced-status-badge {
+    @apply inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium;
+    @apply transition-all duration-200 hover:scale-105;
+  }
+
+  /* Enhanced selection checkbox styling */
+  .enhanced-selection-checkbox {
+    @apply transition-all duration-200 hover:scale-110;
+    @apply rounded border-2 focus:ring-2 focus:ring-primary/50;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 1024px) {
+    .enhanced-sticky-table {
+      --sticky-offset-actions: 50px;
+      --sticky-offset-name: 150px;
+      --sticky-offset-status: 320px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .enhanced-sticky-table {
+      --sticky-offset-actions: 45px;
+      --sticky-offset-name: 120px;
+      --sticky-offset-status: 280px;
+    }
+
+    .enhanced-table-cell {
+      @apply text-xs py-2 px-2;
+    }
+  }
+
+  /* Dark mode enhancements */
+  .dark .enhanced-sticky-header {
+    background: linear-gradient(to bottom, 
+      var(--background) 0%, 
+      var(--background) 90%, 
+      transparent 100%);
+    box-shadow: 0 2px 8px -2px rgba(255, 255, 255, 0.1);
+  }
+
+  .dark .enhanced-pinned-header {
+    background: linear-gradient(135deg, 
+      var(--primary-900) 0%, 
+      var(--background) 100%);
+    border-right-color: var(--primary-700);
+  }
+
+  /* Smooth scroll behavior */
+  .table-scroll-container {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-300) transparent;
+  }
+
+  .table-scroll-container::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+
+  .table-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .table-scroll-container::-webkit-scrollbar-thumb {
+    background-color: var(--primary-300);
+    border-radius: 4px;
+  }
+
+  .table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-400);
+  }
+}
+
+/* Enhanced animations */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
 }
