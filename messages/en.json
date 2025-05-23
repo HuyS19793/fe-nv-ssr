@@ -142,6 +142,13 @@
     "updatingJobList": "Updating job list...",
     "refreshData": "Refresh data",
     "refreshingData": "Refreshing data...",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "downloadAll": "Download All",
+    "downloadAllTooltip": "Download all scheduled jobs as CSV file",
+    "downloadSuccess": "Download Completed",
+    "downloadError": "Download Failed",
+    "downloadInProgress": "Preparing Download...",
+    "fileDownloadedSuccessfully": "CSV file has been downloaded successfully",
+    "preparingDownload": "Preparing your CSV file for download..."
   }
 }

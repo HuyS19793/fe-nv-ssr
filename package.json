@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack -p 3300",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "merge": "node scripts/merge.js"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.13",

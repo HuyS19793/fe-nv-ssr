@@ -17,6 +17,7 @@ import { UploadJobModal } from '../upload/upload-job-modal'
 import { toast } from '@/components/ui/toast'
 import { DeleteConfirmationDialog } from '../delete-confirmation-dialog'
 import { useScheduleRefresh } from '@/hooks/use-schedule-refresh'
+import { DownloadAllButton } from '../download-all-button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -270,6 +271,13 @@ export function EnhancedServerScheduleTable({
             />
             {t('refreshData')}
           </Button>
+
+          {/* Add Download All Button */}
+          <DownloadAllButton
+            jobType={jobType}
+            disabled={isRefreshing || isLoading}
+            showText={true}
+          />
 
           {/* Column visibility selector */}
           <DropdownMenu>

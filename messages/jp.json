@@ -142,6 +142,13 @@
     "updatingJobList": "ジョブリストを更新中...",
     "refreshData": "データを更新",
     "refreshingData": "データを更新中...",
-    "deleting": "削除中..."
+    "deleting": "削除中...",
+    "downloadAll": "全てダウンロード",
+    "downloadAllTooltip": "すべてのスケジュールジョブをCSVファイルでダウンロード",
+    "downloadSuccess": "ダウンロード完了",
+    "downloadError": "ダウンロード失敗",
+    "downloadInProgress": "ダウンロード準備中...",
+    "fileDownloadedSuccessfully": "CSVファイルのダウンロードが正常に完了しました",
+    "preparingDownload": "CSVファイルのダウンロードを準備しています..."
   }
 }
