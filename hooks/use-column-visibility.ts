@@ -20,60 +20,106 @@ export function useColumnVisibility({ jobType }: UseColumnVisibilityProps) {
     user?.role === 'LEADER' || user?.role === 'MAINTAINER'
 
   const columnVisibility = useMemo(() => {
-    return {
-      // Selection and core columns - always visible
+    const baseColumns = {
+      // Core pinned columns - always visible
       select: true,
+      actions: true,
       job_name: true,
       job_status: true,
-      username: true,
+
+      // Common columns
+      username: true, // Task assign
+      setting_id: true,
       status: true,
       modified: true,
+      is_maintaining: isLeaderOrMaintainer,
 
-      // Show all basic columns by default
-      external_linked: true,
-      setting_id: true,
-      media: true,
-      media_off: true,
+      // Scheduling columns
       scheduler_weekday: true,
       scheduler_time: true,
       time: true,
-      cube_off: true,
-      conmane_off: true,
+
+      // Media & Process - common
+      media: true,
       redownload_type: true,
       redownload: true,
       which_process: true,
+
+      // Shared process columns
+      cube_off: true,
+      conmane_off: true,
+    }
+
+    if (isCVer) {
+      // CVer tab - show CVer specific columns
+      return {
+        ...baseColumns,
+
+        // CVer specific columns
+        upload: true,
+        upload_opemane: true,
+        opemane: true,
+        media_master_update: true,
+        master_update_redownload_type: true,
+        master_update_redownload: true,
+        split_medias: true,
+        split_days: true,
+        skip_to: true,
+
+        // Common fields for CVer
+        drive_folder: true,
+        old_drive_folder: true,
+        master_account: true,
+        workplace: true,
+        chanel_id: true,
+        slack_id: true,
+
+        // Hide Navigator specific columns
+        external_linked: false,
+        cad_inform: false,
+        conmane_confirm: false,
+        group_by: false,
+        cad_id: false,
+        wait_time: false,
+        spreadsheet_id: false,
+        spreadsheet_sheet: false,
+        custom_info: false,
+        use_api: false,
+      }
+    }
+
+    // Navigator tab - show Navigator specific columns
+    return {
+      ...baseColumns,
+
+      // Navigator specific columns
+      external_linked: true,
+      cad_inform: true,
+      conmane_confirm: true,
+      group_by: true,
+      cad_id: true,
+      wait_time: true,
+      spreadsheet_id: true,
+      spreadsheet_sheet: true,
       drive_folder: true,
       old_drive_folder: true,
+      custom_info: true,
       master_account: true,
+      use_api: true,
       workplace: true,
       chanel_id: true,
       slack_id: true,
 
-      // Navigator specific columns - show only for NAVI
-      cad_inform: !isCVer,
-      cad_id: !isCVer,
-      wait_time: !isCVer,
-      spreadsheet_id: !isCVer,
-      spreadsheet_sheet: !isCVer,
-      custom_info: !isCVer,
-      use_api: !isCVer,
-      conmane_confirm: !isCVer,
-      group_by: !isCVer,
-
-      // CVer specific columns - show only for CVER
-      upload: isCVer,
-      upload_opemane: isCVer,
-      opemane: isCVer,
-      split_medias: isCVer,
-      split_days: isCVer,
-      media_master_update: isCVer,
-      media_master_update_off: isCVer,
-      master_update_redownload: isCVer,
-      master_update_redownload_type: isCVer,
-      skip_to: isCVer,
-
-      // Role-based visibility - show for leaders/maintainers
-      is_maintaining: isLeaderOrMaintainer,
+      // Hide CVer specific columns
+      upload: false,
+      upload_opemane: false,
+      opemane: false,
+      media_master_update: false,
+      master_update_redownload_type: false,
+      master_update_redownload: false,
+      split_medias: false,
+      split_days: false,
+      skip_to: false,
     }
   }, [isCVer, isLeaderOrMaintainer])
 

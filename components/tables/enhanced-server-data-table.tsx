@@ -29,6 +29,7 @@ interface CustomColumnMeta {
   maxWidth?: string
   isSticky?: boolean
   stickyPosition?: number
+  stickyLeft?: string
 }
 
 declare module '@tanstack/react-table' {
@@ -102,7 +103,7 @@ export function EnhancedServerDataTable<TData>({
     for (let i = 0; i < columnIndex; i++) {
       const col = columns[i]
       if (col.meta?.isSticky) {
-        const width = col.meta.width || '180px'
+        const width = col.meta.width || '160px'
         const widthValue = parseInt(width, 10)
         leftPosition += widthValue
       }
@@ -131,57 +132,31 @@ export function EnhancedServerDataTable<TData>({
 
       {/* Enhanced Table Container */}
       <div className='enhanced-sticky-table' ref={tableContainerRef}>
-        <div className='table-scroll-container table-scroll-smooth'>
-          <div
-            className='table-scroll-body'
-            style={{ maxHeight: maxHeightStyle }}>
-            <Table className='fixed-header-table'>
-              <TableHeader className='enhanced-sticky-header'>
+        <div className='relative w-full min-h-[42rem]'>
+          <div className='[&>.tableContainer]:overflow-x-auto'>
+            <Table className='w-full border-separate border-spacing-0'>
+              <TableHeader className='sticky top-0 z-20 bg-white border-b-2 border-gray-200'>
                 <TableRow>
                   {columns.map((column, colIndex) => {
-                    const width = column.meta?.width || '160px'
-                    const minWidth = column.meta?.minWidth || '120px'
-                    const maxWidth = column.meta?.maxWidth || '200px'
                     const isSticky = column.meta?.isSticky || false
-                    const stickyPosition = column.meta?.stickyPosition || 0
-
-                    const leftPosition = isSticky
-                      ? calculateStickyLeftPosition(colIndex)
-                      : undefined
-
-                    const zIndex = isSticky ? 100 - stickyPosition : undefined
-
-                    // Get specific pinned class based on position (updated for no actions)
-                    const getPinnedClass = (position: number) => {
-                      switch (position) {
-                        case 0:
-                          return 'pinned-select'
-                        case 1:
-                          return 'pinned-name'
-                        case 2:
-                          return 'pinned-status'
-                        default:
-                          return ''
-                      }
-                    }
+                    const stickyLeft = column.meta?.stickyLeft
+                    const className = column.meta?.className || 'flex-none w-32'
 
                     return (
                       <TableHead
                         key={column.id}
                         className={cn(
-                          'table-header-cell',
-                          isSticky && 'enhanced-pinned-header',
-                          isSticky && getPinnedClass(stickyPosition)
+                          'py-3 px-0 text-left align-middle font-semibold text-foreground whitespace-nowrap border-r border-gray-100',
+                          className,
+                          isSticky &&
+                            'sticky bg-white z-30 border-r-2 border-gray-200'
                         )}
                         style={{
-                          width,
-                          minWidth,
-                          maxWidth,
-                          ...(isSticky && {
-                            position: 'sticky',
-                            left: leftPosition,
-                            zIndex,
-                          }),
+                          ...(isSticky &&
+                            stickyLeft && {
+                              left: stickyLeft,
+                              boxShadow: '2px 0 4px -2px rgba(0, 0, 0, 0.1)',
+                            }),
                         }}>
                         {renderCellOrHeader(column.header)}
                       </TableHead>
@@ -193,74 +168,42 @@ export function EnhancedServerDataTable<TData>({
                 {data.length > 0 ? (
                   data.map((record, index) => {
                     const row = createTableRow(record, index)
-                    const rowBg =
-                      index % 2 === 0
-                        ? 'var(--sticky-cell-even-bg)'
-                        : 'var(--sticky-cell-odd-bg)'
+                    const isEven = index % 2 === 0
 
                     return (
                       <TableRow
                         key={index}
                         className={cn(
-                          'table-row',
-                          index % 2 === 0 ? 'table-row-even' : 'table-row-odd'
+                          'border-b border-gray-100 hover:bg-gray-50 transition-colors',
+                          isEven ? 'bg-white' : 'bg-gray-50/30'
                         )}>
                         {columns.map((column, colIndex) => {
-                          const rawValue = String(
-                            (record as any)[column.id as string] || ''
-                          )
-
-                          const width = column.meta?.width || '160px'
-                          const minWidth = column.meta?.minWidth || '120px'
-                          const maxWidth = column.meta?.maxWidth || '200px'
                           const isSticky = column.meta?.isSticky || false
-                          const stickyPosition =
-                            column.meta?.stickyPosition || 0
-
-                          const leftPosition = isSticky
-                            ? calculateStickyLeftPosition(colIndex)
-                            : undefined
-
-                          const zIndex = isSticky
-                            ? 50 - stickyPosition
-                            : undefined
-
-                          const getPinnedClass = (position: number) => {
-                            switch (position) {
-                              case 0:
-                                return 'pinned-select'
-                              case 1:
-                                return 'pinned-name'
-                              case 2:
-                                return 'pinned-status'
-                              default:
-                                return ''
-                            }
-                          }
+                          const stickyLeft = column.meta?.stickyLeft
+                          const className =
+                            column.meta?.className || 'flex-none w-32'
 
                           return (
                             <TableCell
                               key={`${index}-${column.id}`}
-                              content={renderCellContent(column, row)}
-                              rawValue={rawValue}
-                              width={width}
-                              minWidth={minWidth}
-                              maxWidth={maxWidth}
-                              isSticky={isSticky}
                               className={cn(
-                                'enhanced-table-cell',
-                                isSticky && 'enhanced-pinned-column',
-                                isSticky && getPinnedClass(stickyPosition)
+                                'py-0 px-0 align-middle relative border-r border-gray-50',
+                                className,
+                                isSticky &&
+                                  'sticky z-10 border-r-2 border-gray-100',
+                                isSticky &&
+                                  (isEven ? 'bg-white' : 'bg-gray-50/30')
                               )}
                               style={{
-                                ...(isSticky && {
-                                  position: 'sticky',
-                                  left: leftPosition,
-                                  zIndex,
-                                  backgroundColor: rowBg,
-                                }),
-                              }}
-                            />
+                                ...(isSticky &&
+                                  stickyLeft && {
+                                    left: stickyLeft,
+                                    boxShadow:
+                                      '2px 0 4px -2px rgba(0, 0, 0, 0.1)',
+                                  }),
+                              }}>
+                              {renderCellContent(column, row)}
+                            </TableCell>
                           )
                         })}
                       </TableRow>
@@ -270,9 +213,9 @@ export function EnhancedServerDataTable<TData>({
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      content='No results.'
-                      className='h-24 text-center'
-                    />
+                      className='h-24 text-center text-gray-500'>
+                      No results.
+                    </TableCell>
                   </TableRow>
                 )}
               </TableBody>

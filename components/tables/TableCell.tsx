@@ -4,29 +4,35 @@
 import { useState, useRef, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { TableCell as UITableCell } from '@/components/ui/table'
+import { ReactNode } from 'react'
 
 // Use Omit to avoid type conflict with "content" property
 interface TableCellProps extends Omit<React.ComponentProps<'td'>, 'content'> {
-  content: React.ReactNode
+  children?: ReactNode
+  content?: ReactNode
+  className?: string
+  style?: React.CSSProperties
+  colSpan?: number
   rawValue?: string
   width?: string
   minWidth?: string
   maxWidth?: string
-  tooltipDisabled?: boolean
   isSticky?: boolean
-  style?: React.CSSProperties // Add style prop for sticky positioning
+  tooltipDisabled?: boolean
 }
 
 export function TableCell({
+  children,
   content,
+  className,
+  style,
+  colSpan,
   rawValue,
   width,
   minWidth = '100px',
   maxWidth = '300px',
-  tooltipDisabled = false,
   isSticky = false,
-  className,
-  style, // Accept style prop
+  tooltipDisabled = false,
   ...props
 }: TableCellProps) {
   const [showTooltip, setShowTooltip] = useState(false)
@@ -62,10 +68,10 @@ export function TableCell({
 
   // Define base styles
   const baseStyle = {
-    '--cell-width': width,
-    '--cell-min-width': minWidth,
-    '--cell-max-width': maxWidth,
-    ...style, // Merge provided styles
+    ...style,
+    ...(width && { width }),
+    ...(minWidth && { minWidth }),
+    ...(maxWidth && { maxWidth }),
   } as React.CSSProperties
 
   return (
@@ -79,7 +85,8 @@ export function TableCell({
         className
       )}
       style={baseStyle}
-      {...props}>
+      {...props}
+      colSpan={colSpan}>
       <div
         className={cn(
           'cell-wrapper relative',
@@ -96,7 +103,7 @@ export function TableCell({
           title={
             tooltipDisabled ? undefined : rawValue || String(content || '')
           }>
-          {content}
+          {content || children}
         </div>
 
         {/* Custom tooltip for larger content - optional enhancement */}
