@@ -67,7 +67,6 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   
-  /* Primary color palette in hex format */
   --primary: #1b5e20;
   --primary-foreground: #ffffff;
   --primary-50: #e8f5e9;
@@ -82,7 +81,6 @@
   --primary-900: #1b5e20;
   --primary-950: #003300;
   
-  /* Sidebar specific colors */
   --sidebar: var(--primary-950);
   --sidebar-foreground: var(--primary-50);
   --sidebar-primary: var(--primary-700);
@@ -92,7 +90,6 @@
   --sidebar-border: var(--primary-800);
   --sidebar-ring: var(--primary-400);
   
-  /* Table header and sticky columns */
   --sticky-header-bg: oklch(0.97 0 0 / 98%);
   --sticky-cell-even-bg: oklch(1 0 0 / 98%);
   --sticky-cell-odd-bg: oklch(0.97 0 0 / 98%);
@@ -125,7 +122,6 @@
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
   
-  /* Dark mode primary colors */
   --primary: #4caf50;
   --primary-foreground: #ffffff;
   --primary-50: #f1f8e9;
@@ -140,7 +136,6 @@
   --primary-900: #33691e;
   --primary-950: #1a3409;
   
-  /* Dark mode sidebar colors */
   --sidebar: var(--primary-950);
   --sidebar-foreground: var(--primary-50);
   --sidebar-primary: var(--primary-700);
@@ -150,7 +145,6 @@
   --sidebar-border: var(--primary-800);
   --sidebar-ring: var(--primary-400);
   
-  /* Dark mode table sticky columns */
   --sticky-header-bg: oklch(0.269 0 0 / 98%);
   --sticky-cell-even-bg: oklch(0.205 0 0 / 98%);
   --sticky-cell-odd-bg: oklch(0.269 0 0 / 98%);
@@ -166,9 +160,7 @@
   }
 }
 
-
 @layer utilities {
-  /* Layout utilities */
   .layout-container {
     @apply flex min-h-screen h-screen overflow-hidden;
   }
@@ -185,11 +177,9 @@
     @apply flex-1 p-6 overflow-auto;
   }
   
-  /* Table containers - điều chỉnh để hoạt động tốt trong không gian giới hạn */
   .data-table-container {
-    @apply w-full rounded-md border border-border overflow-hidden;
+    @apply relative w-full overflow-hidden rounded-md border border-border;
     max-width: calc(100vw - 18rem - 3rem);
-    position: relative;
   }
   
   .table-scroll-container {
@@ -203,31 +193,24 @@
 }
 
 @layer components {
-  /* Main table container with border */
   .data-table-container {
     @apply relative w-full overflow-hidden rounded-md border border-border;
   }
   
-  /* Horizontal scroll container */
   .table-scroll-container {
     @apply w-full overflow-x-auto;
   }
   
-  /* Vertical scroll container with fixed height */
   .table-scroll-body {
     @apply overflow-y-auto;
     position: relative;
-    /* Height will be set via inline style */
   }
   
-  /* Table styling for fixed layout */
   .fixed-header-table {
     @apply w-full table-auto border-separate border-spacing-0;
     position: relative;
-    /* Ensure border-collapse is reset for proper sticky behavior */
   }
   
-  /* Fixed header styling */
   .table-header-group {
     @apply sticky top-0;
     z-index: var(--header-z-index) !important;
@@ -235,7 +218,6 @@
     -webkit-backdrop-filter: blur(8px);
   }
   
-  /* Header cells */
   .table-header-cell {
     @apply py-3 px-4 text-left align-middle font-semibold text-foreground;
     @apply bg-muted/90 border-b-2 border-primary/20;
@@ -243,7 +225,6 @@
     position: relative;
   }
   
-  /* Sticky column header with higher z-index */
   .sticky-column-header {
     position: sticky !important;
     z-index: var(--sticky-header-z-index) !important;
@@ -253,43 +234,28 @@
     box-shadow: var(--shadow-sticky-column);
   }
   
-  /* Sticky column cell */
   .sticky-column-cell {
     position: sticky !important;
     z-index: var(--sticky-cell-z-index) !important;
     box-shadow: var(--shadow-sticky-column);
   }
   
-  /* Sticky first column */
-  .sticky-first-column {
-    @apply sticky left-0 z-10;
-  }
-  
-  /* First column header (double sticky - top and left) */
-  .sticky-first-column-header {
-    @apply sticky left-0 z-30 bg-muted/95 backdrop-blur-sm;
-  }
-  
-  /* Table body styling */
   .table-body {
     @apply bg-background;
   }
   
-  /* Cell styling cho text overflow */
   .table-cell {
     @apply py-3 px-4 border-b align-middle relative;
-    overflow: hidden; /* Quan trọng để tránh overflow */
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   
-  /* Cell content với text truncation tốt hơn */
   .cell-content {
     @apply block w-full overflow-hidden text-ellipsis whitespace-nowrap;
-    max-width: 100%; /* Đảm bảo không vượt quá width của cell */
+    max-width: 100%;
   }
   
-  /* Sticky cell content styling */
   .sticky-table-cell {
     position: sticky;
     background-color: var(--background);
@@ -305,15 +271,14 @@
   .sticky-cell-content {
     display: block;
     max-width: 100%;
-    max-height: 2.5em; /* About 2 lines of text */
-    overflow-y: auto; /* Enable vertical scrolling */
-    overflow-x: hidden; /* Hidden horizontal overflow */
+    max-height: 2.5em;
+    overflow-y: auto;
+    overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: normal;
     word-break: break-word;
   }
   
-  /* Scrollbar styling for sticky cells */
   .sticky-cell-content::-webkit-scrollbar {
     width: 4px;
     height: 4px;
@@ -328,22 +293,19 @@
     border-radius: 20px;
   }
   
-  /* Tooltip styling khi hover cell */
   .cell-tooltip {
     @apply invisible absolute left-0 top-full z-50 mt-2 max-w-xs rounded-md
            bg-popover p-2 text-sm text-popover-foreground shadow-md;
     width: auto;
-    max-width: 300px; /* Giới hạn width của tooltip */
-    white-space: normal; /* Cho phép tooltip xuống dòng */
-    word-break: break-word; /* Ngắt từ nếu cần */
+    max-width: 300px;
+    white-space: normal;
+    word-break: break-word;
   }
   
-  /* Hiện tooltip khi hover */
   .cell-wrapper:hover .cell-tooltip {
     @apply visible;
   }
   
-  /* Đảm bảo các ô có chiều rộng cố định */
   .fixed-width-cell {
     @apply overflow-hidden;
     width: var(--cell-width, auto);
@@ -351,7 +313,6 @@
     max-width: var(--cell-max-width, 300px);
   }
   
-  /* Zebra striping for rows */
   .table-row-even {
     @apply bg-background;
   }
@@ -360,55 +321,32 @@
     @apply bg-muted/30;
   }
   
-  /* Hover effect for rows */
   .table-row:hover {
     @apply bg-muted/50;
   }
 
-  /* Ensure proper rendering in all browsers */
   .fixed-header-table {
     border-collapse: separate;
     border-spacing: 0;
   }
 
-  /* Force opaque backgrounds */
   .sticky-column-header, 
   .sticky-column-cell {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
 
-  /* Add sticky column styles */
   .sticky-column-header {
     position: sticky !important;
     background-color: var(--muted) !important;
-    z-index: 100 !important; /* Higher than regular headers */
+    z-index: 100 !important;
   }
   
   .sticky-column-cell {
     position: sticky !important;
     z-index: 40 !important;
   }
-  
-  /* Shadow for sticky columns to create visual separation */
-  :root {
-    --shadow-sticky-column: 5px 0 5px -5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .dark {
-    --shadow-sticky-column: 5px 0 5px -5px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* Alternate background color for table rows */
-  :root {
-    --muted-alt: var(--muted-30);
-  }
-  
-  .dark {
-    --muted-alt: var(--muted-30);
-  }
 
-  /* Fix for data-table-container thead th */
   .data-table-container thead th {
     position: sticky;
     top: 0;
@@ -416,457 +354,21 @@
   }
 
   .data-table-container thead th.sticky-column-header {
-    z-index: 100 !important; /* Higher than regular headers */
+    z-index: 100 !important;
   }
 
   .data-table-container tbody td.sticky-column-cell {
     z-index: 40 !important;
   }
 
-  /* Selection cell styles */
   .selection-cell {
     cursor: pointer;
-    padding: 0.5rem !important; /* Override default padding */
+    padding: 0.5rem !important;
   }
 
   .selection-cell:hover {
     background-color: var(--primary-50) !important;
   }
-
-  /* Enhanced sticky table container */
-  .enhanced-sticky-table {
-    @apply relative w-full overflow-hidden rounded-lg border border-gray-200;
-  }
-
-  /* Table container với horizontal scroll */
-  .enhanced-sticky-table .tableContainer {
-    @apply overflow-x-auto;
-    scrollbar-width: thin;
-    scrollbar-color: theme('colors.gray.300') transparent;
-  }
-
-  .enhanced-sticky-table .tableContainer::-webkit-scrollbar {
-    height: 6px;
-  }
-
-  .enhanced-sticky-table .tableContainer::-webkit-scrollbar-track {
-    background: theme('colors.gray.50');
-  }
-
-  .enhanced-sticky-table .tableContainer::-webkit-scrollbar-thumb {
-    background-color: theme('colors.gray.300');
-    border-radius: 3px;
-  }
-
-  /* Sticky header với proper z-index */
-  .enhanced-sticky-table thead th {
-    @apply sticky top-0 bg-white;
-    z-index: 20;
-  }
-
-  .enhanced-sticky-table thead th.sticky {
-    z-index: 30 !important;
-  }
-
-  /* Sticky columns với shadow effect */
-  .enhanced-sticky-table .sticky {
-    position: sticky;
-    background-color: inherit;
-  }
-
-  /* Row hover effects */
-  .enhanced-sticky-table tbody tr:hover {
-    @apply bg-gray-50;
-  }
-
-  .enhanced-sticky-table tbody tr:hover .sticky {
-    @apply bg-gray-50;
-  }
-
-  /* Cell content overflow handling */
-  .enhanced-sticky-table .overflow-auto {
-    scrollbar-width: thin;
-    scrollbar-color: theme('colors.gray.200') transparent;
-  }
-
-  .enhanced-sticky-table .overflow-auto::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-
-  .enhanced-sticky-table .overflow-auto::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .enhanced-sticky-table .overflow-auto::-webkit-scrollbar-thumb {
-    background-color: theme('colors.gray.200');
-    border-radius: 2px;
-  }
-
-  /* Responsive mobile adjustments */
-  @media (max-width: 768px) {
-    .enhanced-sticky-table .flex-none {
-      min-width: 0; /* Allow flex items to shrink on mobile */
-    }
-  }
-
-  /* Enhanced table container styles */
-  .enhanced-table-container {
-    @apply relative w-full;
-    /* Ensure proper containment */
-    contain: layout style paint;
-  }
-
-  /* Enhanced table header */
-  .enhanced-table-header {
-    @apply py-4 text-left align-middle font-semibold text-foreground;
-    @apply bg-background border-b-2 border-primary/20;
-    @apply whitespace-nowrap;
-    position: relative;
-    min-height: 56px;
-    /* Better text rendering */
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* Enhanced sticky column header styling */
-  .enhanced-sticky-column-header {
-    /* Additional shadow for depth */
-    box-shadow: 2px 0 8px -2px rgba(0, 0, 0, 0.15) !important;
-    border-right: 2px solid var(--primary-200) !important;
-    /* Ensure proper layering */
-    z-index: 101 !important;
-  }
-
-  /* Enhanced table row styling */
-  .enhanced-table-row {
-    @apply border-b transition-all duration-200;
-    min-height: 56px;
-    /* Improve hover effect */
-    cursor: default;
-  }
-
-  .enhanced-table-row:hover {
-    @apply bg-muted/60;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Enhanced table cell styling */
-  .enhanced-table-cell {
-    @apply py-4 align-middle relative;
-    @apply text-sm;
-    min-height: 56px;
-    /* Better text handling */
-    overflow: hidden;
-    word-wrap: break-word;
-    hyphens: auto;
-    /* Smooth transitions */
-    transition: all 0.2s ease-in-out;
-  }
-
-  /* Enhanced sticky column cell styling */
-  .enhanced-sticky-column-cell {
-    box-shadow: 2px 0 8px -2px rgba(0, 0, 0, 0.15) !important;
-    border-right: 2px solid var(--primary-200) !important;
-    /* Ensure content is properly contained */
-    overflow: hidden;
-  }
-
-  /* Selection column specific improvements */
-  [data-column-id="select"] .enhanced-table-cell,
-  [data-column-id="select"] .enhanced-table-header {
-    @apply text-center justify-center;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-  }
-
-  /* Enhanced checkbox styling */
-  .enhanced-selection-checkbox {
-    @apply transition-all duration-300 ease-out;
-    width: 18px !important;
-    height: 18px !important;
-    /* Better visual feedback */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-}
-
-/* Enhanced animations */
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.animate-slide-in-left {
-  animation: slideInLeft 0.3s ease-out;
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.2s ease-out;
-}
-
-/* Enhanced table container styles */
-.enhanced-table-container {
-  @apply relative w-full;
-  /* Ensure proper containment */
-  contain: layout style paint;
-}
-
-/* Enhanced table wrapper with proper overflow handling */
-.enhanced-table-wrapper {
-  @apply relative w-full overflow-hidden rounded-lg border border-border;
-  /* Allow full width usage */
-  max-width: 100%;
-  /* Enable hardware acceleration */
-  transform: translateZ(0);
-  will-change: scroll-position;
-}
-
-/* Enhanced table scroll container fixes */
-.enhanced-table-wrapper .table-scroll-container {
-  @apply w-full;
-  overflow-x: auto;
-  overflow-y: hidden;
-  /* Ensure smooth scrolling */
-  scroll-behavior: smooth;
-  /* Custom scrollbar styling */
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary-300) var(--muted);
-}
-
-.enhanced-table-wrapper .table-scroll-container::-webkit-scrollbar {
-  height: 10px;
-  width: 10px;
-}
-
-.enhanced-table-wrapper .table-scroll-container::-webkit-scrollbar-track {
-  background: var(--muted);
-  border-radius: 5px;
-}
-
-.enhanced-table-wrapper .table-scroll-container::-webkit-scrollbar-thumb {
-  background: var(--primary-300);
-  border-radius: 5px;
-  border: 2px solid var(--muted);
-}
-
-.enhanced-table-wrapper .table-scroll-container::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-400);
-}
-
-/* Enhanced sticky table improvements */
-.enhanced-sticky-table {
-  @apply w-full border-separate border-spacing-0;
-  /* Minimum width to ensure horizontal scrolling works */
-  min-width: max-content;
-  position: relative;
-  /* Performance optimization */
-  transform: translateZ(0);
-}
-
-/* Enhanced sticky header improvements */
-.enhanced-sticky-header {
-  @apply sticky top-0;
-  z-index: 100 !important;
-  background: var(--background);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  /* Improved shadow for better visual separation */
-  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.15);
-  border-bottom: 2px solid var(--primary-100);
-}
-
-/* Enhanced table header styling */
-.enhanced-table-header {
-  @apply py-4 text-left align-middle font-semibold text-foreground;
-  @apply bg-background border-b-2 border-primary/20;
-  @apply whitespace-nowrap;
-  position: relative;
-  min-height: 56px;
-  /* Better text rendering */
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Enhanced sticky column header styling */
-.enhanced-sticky-column-header {
-  /* Additional shadow for depth */
-  box-shadow: 2px 0 8px -2px rgba(0, 0, 0, 0.15) !important;
-  border-right: 2px solid var(--primary-200) !important;
-  /* Ensure proper layering */
-  z-index: 101 !important;
-}
-
-/* Enhanced table row styling */
-.enhanced-table-row {
-  @apply border-b transition-all duration-200;
-  min-height: 56px;
-  /* Improve hover effect */
-  cursor: default;
-}
-
-.enhanced-table-row:hover {
-  @apply bg-muted/60;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.1);
-}
-
-/* Enhanced table cell styling */
-.enhanced-table-cell {
-  @apply py-4 align-middle relative;
-  @apply text-sm;
-  min-height: 56px;
-  /* Better text handling */
-  overflow: hidden;
-  word-wrap: break-word;
-  hyphens: auto;
-  /* Smooth transitions */
-  transition: all 0.2s ease-in-out;
-}
-
-/* Enhanced sticky column cell styling */
-.enhanced-sticky-column-cell {
-  box-shadow: 2px 0 8px -2px rgba(0, 0, 0, 0.15) !important;
-  border-right: 2px solid var(--primary-200) !important;
-  /* Ensure content is properly contained */
-  overflow: hidden;
-}
-
-/* Selection column specific improvements */
-[data-column-id="select"] .enhanced-table-cell,
-[data-column-id="select"] .enhanced-table-header {
-  @apply text-center justify-center;
-  padding-left: 12px !important;
-  padding-right: 12px !important;
-}
-
-/* Enhanced checkbox styling */
-.enhanced-selection-checkbox {
-  @apply transition-all duration-300 ease-out;
-  width: 18px !important;
-  height: 18px !important;
-  /* Better visual feedback */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.enhanced-selection-checkbox:hover {
-  @apply scale-110;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.enhanced-selection-checkbox:focus {
-  @apply ring-2 ring-primary/50 ring-offset-2;
-}
-
-/* Enhanced status badge styling */
-.enhanced-status-badge {
-  @apply inline-flex items-center gap-1 font-medium transition-all duration-300;
-  min-width: 70px;
-  justify-content: center;
-  /* Add subtle animation */
-  transform: translateZ(0);
-}
-
-.enhanced-status-badge:hover {
-  @apply scale-105;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Improved responsive behavior */
-@media (max-width: 1280px) {
-  .enhanced-table-cell {
-    @apply text-xs py-3 px-2;
-    min-height: 48px;
-  }
-  
-  .enhanced-table-header {
-    @apply text-xs py-3 px-2;
-    min-height: 48px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .enhanced-table-wrapper {
-    /* Ensure horizontal scrolling on tablets */
-    overflow-x: auto;
-  }
-  
-  .enhanced-sticky-table {
-    /* Force minimum width for proper column display */
-    min-width: 1400px;
-  }
-}
-
-@media (max-width: 768px) {
-  .enhanced-table-wrapper {
-    /* Mobile optimizations */
-    border-radius: 8px;
-  }
-  
-  .enhanced-sticky-table {
-    min-width: 1200px;
-  }
-  
-  .enhanced-table-cell,
-  .enhanced-table-header {
-    @apply text-xs py-2 px-1;
-    min-height: 44px;
-  }
-}
-
-/* Dark mode specific enhancements */
-.dark .enhanced-sticky-header {
-  background: var(--background);
-  border-bottom-color: var(--primary-800);
-  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.3);
-}
-
-.dark .enhanced-sticky-column-header,
-.dark .enhanced-sticky-column-cell {
-  border-right-color: var(--primary-700) !important;
-  box-shadow: 2px 0 8px -2px rgba(0, 0, 0, 0.3) !important;
-}
-
-.dark .enhanced-table-row:hover {
-  box-shadow: 0 2px 8px -2px rgba(255, 255, 255, 0.1);
-}
-
-/* Performance optimizations */
-.enhanced-sticky-table * {
-  /* Optimize rendering performance */
-  transform: translateZ(0);
-}
-
-/* Fix for potential layout shifts */
-.enhanced-table-wrapper {
-  /* Prevent layout shift during loading */
-  min-height: 200px;
-}
-
-/* Accessibility improvements */
-.enhanced-table-header:focus,
-.enhanced-table-cell:focus {
-  @apply outline-none ring-2 ring-primary/50 ring-offset-2;
-}
-
-/* Smooth animation for table loading */
-.enhanced-table-wrapper {
-  animation: fadeIn 0.3s ease-out;
 }
 
 @keyframes fadeIn {
@@ -878,4 +380,8 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
 }
