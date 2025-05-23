@@ -312,3 +312,8 @@ export async function deleteScheduledJobs(ids: string[]): Promise<void> {
     throw error
   }
 }
+
+// Re-export all schedule-related functionality
+export * from './schedule/types'
+export * from './schedule/queries'
+export * from './schedule/mutations'

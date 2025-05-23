@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { toast } from '@/components/ui/toast'
-import { useTranslations } from 'next-intl'
-import { uploadScheduledJobFile } from '@/actions/uploadJob'
 import { useRouter } from 'next/navigation'
+import { validateFile } from '@/utils/file-validation'
+import { useToastHandler } from '@/hooks/use-toast-handler'
+import { useLoadingState } from '@/hooks/use-loading-state'
+import { uploadScheduledJobFile } from '@/actions/uploadJob'
 
 interface UseFileUploadProps {
   jobType: 'NAVI' | 'CVER'
@@ -12,152 +13,85 @@ interface UseFileUploadProps {
   onError?: (error: string) => void
 }
 
-interface FileError {
-  type?: string
-  size?: string
-}
-
-/**
- * Validates if a file has a valid type based on both MIME type and extension
- */
-function isValidFileType(file: File): boolean {
-  // Check MIME type
-  const validMimeTypes = [
-    'text/csv',
-    'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'application/vnd.ms-excel.sheet.macroEnabled.12',
-  ]
-
-  // Check file extension
-  const filename = file.name.toLowerCase()
-  const validExtensions = ['.csv', '.xlsx', '.xls', '.xlsm']
-
-  // Return true if either MIME type or extension is valid
-  return (
-    validMimeTypes.includes(file.type) ||
-    validExtensions.some((ext) => filename.endsWith(ext))
-  )
-}
-
 export function useFileUpload({
   jobType,
   onSuccess,
   onError,
 }: UseFileUploadProps) {
-  const t = useTranslations('Schedule')
   const router = useRouter()
+  const toast = useToastHandler('Schedule')
+  const { isLoading, withLoading } = useLoadingState()
+
   const [file, setFile] = useState<File | null>(null)
-  const [isUploading, setIsUploading] = useState(false)
-  const [errors, setErrors] = useState<FileError>({})
+  const [errors, setErrors] = useState<{ type?: string; size?: string }>({})
 
-  // File validation
-  const validateFile = useCallback(
-    (file: File): FileError => {
-      const errors: FileError = {}
+  // File validation and change handler
+  const handleFileChange = useCallback((newFile: File | null) => {
+    setErrors({})
 
-      // Check file type using the new function
-      if (!isValidFileType(file)) {
-        errors.type = t('invalidFileType')
+    if (!newFile) {
+      setFile(null)
+      return
+    }
+
+    const validation = validateFile(
+      newFile,
+      {},
+      {
+        invalidType: 'Invalid file type. Please upload a CSV or Excel file.',
+        fileTooLarge: 'File size exceeds the 50MB limit.',
       }
+    )
 
-      // Check file size (50MB max)
-      const maxSize = 50 * 1024 * 1024 // 50MB in bytes
-      if (file.size > maxSize) {
-        errors.size = t('fileSizeTooLarge', { maxSize: '50MB' })
-      }
+    if (!validation.isValid) {
+      setErrors(validation.errors)
+      return
+    }
 
-      return errors
-    },
-    [t]
-  )
+    setFile(newFile)
+  }, [])
 
-  // Handle file selection
-  const handleFileChange = useCallback(
-    (newFile: File | null) => {
-      setErrors({})
-
-      if (!newFile) {
-        setFile(null)
-        return
-      }
-
-      const validationErrors = validateFile(newFile)
-      if (Object.keys(validationErrors).length > 0) {
-        setErrors(validationErrors)
-        // Don't set the file if it's invalid
-        return
-      }
-
-      setFile(newFile)
-    },
-    [validateFile]
-  )
-
-  // Clear the selected file
+  // Clear file handler
   const clearFile = useCallback(() => {
     setFile(null)
     setErrors({})
   }, [])
 
-  // Handle form submission
+  // Submit handler
   const handleSubmit = useCallback(async () => {
     if (!file) return
 
-    setIsUploading(true)
+    await withLoading(async () => {
+      try {
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('jobType', jobType)
 
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('jobType', jobType)
+        const result = await uploadScheduledJobFile(formData)
 
-      const result = await uploadScheduledJobFile(formData)
-
-      if (result.success) {
-        toast({
-          title: t('uploadSuccess'),
-          description: result.message || t('jobsCreatedSuccessfully'),
-          variant: 'success',
-        })
-
-        clearFile()
-
-        // Force refresh server data
-        router.refresh()
-
-        // Small delay before calling onSuccess to ensure the refresh is triggered
-        setTimeout(() => {
-          if (onSuccess) onSuccess()
-        }, 100)
-      } else {
-        const errorMessage = result.error || t('uploadFailed')
-        toast({
-          title: t('uploadError'),
-          description: errorMessage,
-          variant: 'destructive',
-        })
-
-        if (onError) onError(errorMessage)
+        if (result.success) {
+          toast.success('uploadSuccess', 'jobsCreatedSuccessfully')
+          clearFile()
+          router.refresh()
+          setTimeout(() => onSuccess?.(), 100)
+        } else {
+          toast.error('uploadError', result.error)
+          onError?.(result.error || 'Upload failed')
+        }
+      } catch (error) {
+        toast.error('uploadError', error)
+        onError?.(
+          error instanceof Error
+            ? error.message
+            : 'An unexpected error occurred'
+        )
       }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : t('unexpectedError')
-
-      toast({
-        title: t('uploadError'),
-        description: errorMessage,
-        variant: 'destructive',
-      })
-
-      if (onError) onError(errorMessage)
-    } finally {
-      setIsUploading(false)
-    }
-  }, [file, jobType, t, clearFile, onSuccess, onError, router])
+    })
+  }, [file, jobType, toast, withLoading, clearFile, onSuccess, onError, router])
 
   return {
     file,
-    isUploading,
+    isLoading,
     errors,
     handleFileChange,
     clearFile,
