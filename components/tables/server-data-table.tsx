@@ -21,7 +21,6 @@ import {
   ChevronsRight,
 } from 'lucide-react'
 import { useServerTable } from '@/hooks/use-server-table'
-import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
 // Define custom column meta type with sticky properties
@@ -61,10 +60,9 @@ export function ServerDataTable<TData>({
   totalCount,
   searchPlaceholder = 'Search...',
   searchValue = '',
-  maxHeight = '70vh', // Default max height
+  maxHeight = '70vh',
   filterComponent,
 }: ServerDataTableProps<TData>) {
-  const pathname = usePathname()
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const [containerWidth, setContainerWidth] = useState<number | null>(null)
 
@@ -82,12 +80,8 @@ export function ServerDataTable<TData>({
       }
     }
 
-    // Initial width
     updateWidth()
-
-    // Add resize listener
     window.addEventListener('resize', updateWidth)
-
     return () => {
       window.removeEventListener('resize', updateWidth)
     }
@@ -120,7 +114,6 @@ export function ServerDataTable<TData>({
   // Helper to safely render cell content with fallback
   const renderCellContent = (column: ColumnDef<TData, any>, row: any) => {
     if (column.cell) {
-      // Check if cell is a function
       if (typeof column.cell === 'function') {
         const cellContext = {
           row,
@@ -130,24 +123,20 @@ export function ServerDataTable<TData>({
 
         return column.cell(cellContext)
       }
-
-      // If cell is not a function, return it directly
       return column.cell
     }
-
-    // Fallback: display the raw value from the row
     return row.getValue(column.id as string)
   }
 
-  // Helper to calculate left position for sticky columns
+  // Helper to calculate left position for sticky columns - FIX
   const calculateStickyLeftPosition = (columnIndex: number): string => {
     let leftPosition = 0
 
-    // Find all sticky columns before this one and sum their widths
+    // Calculate based on actual sticky columns before this one
     for (let i = 0; i < columnIndex; i++) {
       const col = columns[i]
       if (col.meta?.isSticky) {
-        // Extract width without 'px' and convert to number
+        // Get width from meta or use default
         const width = col.meta.width || '180px'
         const widthValue = parseInt(width, 10)
         leftPosition += widthValue
@@ -157,7 +146,6 @@ export function ServerDataTable<TData>({
     return `${leftPosition}px`
   }
 
-  // Dynamically create style for max-height
   const maxHeightStyle =
     typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight
 
@@ -165,7 +153,6 @@ export function ServerDataTable<TData>({
     <div className='space-y-4 w-full'>
       {/* Search field and filter button in the same row */}
       <div className='flex items-center justify-between gap-4'>
-        {/* Search form on the left */}
         <form onSubmit={handleSearch} className='relative flex-1 max-w-sm'>
           <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
           <Input
@@ -175,12 +162,10 @@ export function ServerDataTable<TData>({
             className='pl-8'
           />
         </form>
-
-        {/* Filter component on the right */}
         {filterComponent}
       </div>
 
-      {/* Table Container with proper nesting for fixed header and scrolling */}
+      {/* Table Container with proper sticky support */}
       <div className='data-table-container' ref={tableContainerRef}>
         <div className='table-scroll-container'>
           <div
@@ -190,40 +175,37 @@ export function ServerDataTable<TData>({
               <TableHeader className='table-header-group'>
                 <TableRow>
                   {columns.map((column, colIndex) => {
-                    // Determine column styles based on metadata
                     const width =
                       column.meta?.width ||
-                      (column.id === 'actions'
-                        ? '120px'
+                      (column.id === 'select'
+                        ? '56px'
                         : column.id === 'modified'
                         ? '200px'
                         : column.id === 'job_name'
-                        ? '300px'
+                        ? '256px'
+                        : column.id === 'job_status'
+                        ? '128px'
                         : '180px')
 
                     const minWidth =
                       column.meta?.minWidth ||
-                      (column.id === 'actions' ? '100px' : '120px')
+                      (column.id === 'select' ? '56px' : '120px')
 
                     const maxWidth =
                       column.meta?.maxWidth ||
-                      (column.id === 'actions'
-                        ? '150px'
+                      (column.id === 'select'
+                        ? '56px'
                         : column.id === 'job_name'
                         ? '300px'
                         : '250px')
 
-                    // Check if this column is sticky
                     const isSticky = column.meta?.isSticky || false
                     const stickyPosition = column.meta?.stickyPosition || 0
 
-                    // Calculate left position for sticky columns
                     const leftPosition = isSticky
                       ? calculateStickyLeftPosition(colIndex)
                       : undefined
 
-                    // Calculate z-index for sticky headers - higher position = lower z-index
-                    // This ensures proper layering when scrolling
                     const zIndex = isSticky ? 40 - stickyPosition : undefined
 
                     return (
@@ -241,7 +223,6 @@ export function ServerDataTable<TData>({
                             position: 'sticky',
                             left: leftPosition,
                             zIndex,
-                            // Improved background for better visibility
                             backgroundColor: 'var(--sticky-header-bg)',
                             boxShadow: 'var(--shadow-sticky-column)',
                           }),
@@ -255,9 +236,7 @@ export function ServerDataTable<TData>({
               <TableBody>
                 {data.length > 0 ? (
                   data.map((record, index) => {
-                    // Create a mock row that behaves like TanStack Table row
                     const row = createTableRow(record, index)
-                    // Determine row background based on even/odd
                     const rowBg =
                       index % 2 === 0
                         ? 'var(--sticky-cell-even-bg)'
@@ -271,45 +250,42 @@ export function ServerDataTable<TData>({
                           index % 2 === 0 ? 'table-row-even' : 'table-row-odd'
                         )}>
                         {columns.map((column, colIndex) => {
-                          // Get raw value for tooltip
                           const rawValue = String(
                             (record as any)[column.id as string] || ''
                           )
 
-                          // Determine column styles based on metadata
                           const width =
                             column.meta?.width ||
-                            (column.id === 'actions'
-                              ? '120px'
+                            (column.id === 'select'
+                              ? '56px'
                               : column.id === 'modified'
                               ? '200px'
                               : column.id === 'job_name'
-                              ? '300px'
+                              ? '256px'
+                              : column.id === 'job_status'
+                              ? '128px'
                               : '180px')
 
                           const minWidth =
                             column.meta?.minWidth ||
-                            (column.id === 'actions' ? '100px' : '120px')
+                            (column.id === 'select' ? '56px' : '120px')
 
                           const maxWidth =
                             column.meta?.maxWidth ||
-                            (column.id === 'actions'
-                              ? '150px'
+                            (column.id === 'select'
+                              ? '56px'
                               : column.id === 'job_name'
                               ? '300px'
                               : '250px')
 
-                          // Check if this column is sticky
                           const isSticky = column.meta?.isSticky || false
                           const stickyPosition =
                             column.meta?.stickyPosition || 0
 
-                          // Calculate left position for sticky columns
                           const leftPosition = isSticky
                             ? calculateStickyLeftPosition(colIndex)
                             : undefined
 
-                          // Calculate z-index for sticky columns - higher position = lower z-index
                           const zIndex = isSticky
                             ? 30 - stickyPosition
                             : undefined
@@ -343,7 +319,12 @@ export function ServerDataTable<TData>({
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      content='No results.'
+                      content={
+                        <div className='flex flex-col items-center gap-2'>
+                          <div className='text-4xl'>📊</div>
+                          <div>No results found</div>
+                        </div>
+                      }
                       className='h-24 text-center'
                     />
                   </TableRow>
@@ -354,12 +335,20 @@ export function ServerDataTable<TData>({
         </div>
       </div>
 
-      {/* Pagination */}
-      <div className='flex flex-col sm:flex-row items-center justify-between gap-4 py-4'>
-        <div className='text-sm text-muted-foreground'>
+      {/* Enhanced Pagination */}
+      <div className='flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2'>
+        <div className='text-sm text-muted-foreground font-medium'>
           {totalCount > 0 ? (
             <>
-              Showing {startItem} to {endItem} of {totalCount} items
+              Showing{' '}
+              <span className='font-semibold text-foreground'>{startItem}</span>{' '}
+              to{' '}
+              <span className='font-semibold text-foreground'>{endItem}</span>{' '}
+              of{' '}
+              <span className='font-semibold text-foreground'>
+                {totalCount}
+              </span>{' '}
+              items
             </>
           ) : (
             'No results'
@@ -370,34 +359,38 @@ export function ServerDataTable<TData>({
             variant='outline'
             size='sm'
             onClick={() => goToPage(1)}
-            disabled={page <= 1}>
+            disabled={page <= 1}
+            className='h-9 px-3'>
             <ChevronsLeft className='h-4 w-4' />
           </Button>
           <Button
             variant='outline'
             size='sm'
             onClick={() => goToPage(page - 1)}
-            disabled={page <= 1}>
+            disabled={page <= 1}
+            className='h-9 px-3'>
             <ChevronLeft className='h-4 w-4' />
           </Button>
-          <span className='flex items-center gap-1 text-sm'>
+          <div className='flex items-center gap-1 text-sm font-medium px-3 py-2 rounded-md bg-muted/50'>
             <span>Page</span>
-            <strong>
-              {page} of {pageCount || 1}
-            </strong>
-          </span>
+            <span className='font-bold text-primary'>{page}</span>
+            <span>of</span>
+            <span className='font-bold'>{pageCount || 1}</span>
+          </div>
           <Button
             variant='outline'
             size='sm'
             onClick={() => goToPage(page + 1)}
-            disabled={page >= pageCount}>
+            disabled={page >= pageCount}
+            className='h-9 px-3'>
             <ChevronRight className='h-4 w-4' />
           </Button>
           <Button
             variant='outline'
             size='sm'
             onClick={() => goToPage(pageCount)}
-            disabled={page >= pageCount}>
+            disabled={page >= pageCount}
+            className='h-9 px-3'>
             <ChevronsRight className='h-4 w-4' />
           </Button>
         </div>

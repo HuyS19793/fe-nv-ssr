@@ -3,8 +3,8 @@
 import { useState, useMemo } from 'react'
 import { ScheduledJob, deleteScheduledJobs } from '@/actions/schedule'
 import { useTranslations } from 'next-intl'
-import { EnhancedServerDataTable } from '@/components/tables/enhanced-server-data-table'
-import { getEnhancedTableColumns } from './enhanced-column-definitions'
+import { ServerDataTable } from '@/components/tables/server-data-table'
+import { getServerTableColumns } from './server-column-definitions'
 import { useTableSelection } from '@/hooks/use-table-selection'
 import { useColumnVisibility } from '@/hooks/use-column-visibility'
 import { Button } from '@/components/ui/button'
@@ -49,52 +49,12 @@ type Translations = {
   selectRow: string
   job_name: string
   job_status: string
-  username: string
-  external_linked: string
-  setting_id: string
-  status: string
-  modified: string
-  is_maintaining: string
-  media: string
-  media_master_update: string
-  scheduler_weekday: string
-  scheduler_time: string
-  time: string
-  cube_off: string
-  conmane_off: string
-  redownload_type: string
-  redownload: string
-  master_update_redownload_type: string
-  master_update_redownload: string
-  upload: string
-  upload_opemane: string
-  opemane: string
-  split_medias: string
-  split_days: string
-  which_process: string
-  cad_inform: string
-  conmane_confirm: string
-  group_by: string
-  cad_id: string
-  wait_time: string
-  spreadsheet_id: string
-  spreadsheet_sheet: string
-  drive_folder: string
-  old_drive_folder: string
-  custom_info: string
-  master_account: string
-  skip_to: string
-  use_api: string
-  workplace: string
-  chanel_id: string
-  slack_id: string
   yes: string
   no: string
 }
 
 /**
- * Enhanced server-side rendered table without actions column
- * Shows all relevant columns by default
+ * Enhanced server-side rendered table using ServerDataTable
  */
 export function EnhancedServerScheduleTable({
   jobType,
@@ -106,7 +66,7 @@ export function EnhancedServerScheduleTable({
 }: EnhancedServerScheduleTableProps) {
   const t = useTranslations('Schedule')
 
-  // Create translations object to pass to column definitions
+  // Create translations object
   const translations = useMemo<Translations>(
     () => ({
       selectAll: t('selectAll'),
@@ -158,7 +118,7 @@ export function EnhancedServerScheduleTable({
     [t]
   )
 
-  // Column visibility management - now shows all columns by default
+  // Column visibility management
   const { columnVisibility } = useColumnVisibility({ jobType })
   const [customColumnVisibility, setCustomColumnVisibility] = useState<
     Record<string, boolean>
@@ -207,10 +167,10 @@ export function EnhancedServerScheduleTable({
     isLoading,
   } = useFilter()
 
-  // Column definitions without actions
+  // Column definitions using ServerDataTable columns
   const columns = useMemo(
     () =>
-      getEnhancedTableColumns({
+      getServerTableColumns({
         isSelected,
         isAllSelected,
         toggleSelection,
@@ -274,7 +234,7 @@ export function EnhancedServerScheduleTable({
 
   // Get visible columns for column selector
   const availableColumns = useMemo(() => {
-    const coreColumns = ['job_name', 'job_status'] // Can't be hidden
+    const coreColumns = ['job_name', 'job_status']
     return Object.entries(columnVisibility)
       .filter(([key]) => !['select'].includes(key))
       .map(([key, defaultVisible]) => ({
@@ -284,7 +244,6 @@ export function EnhancedServerScheduleTable({
         canToggle: !coreColumns.includes(key),
       }))
       .sort((a, b) => {
-        // Sort core columns first, then alphabetically
         if (coreColumns.includes(a.key) && !coreColumns.includes(b.key))
           return -1
         if (!coreColumns.includes(a.key) && coreColumns.includes(b.key))
@@ -295,7 +254,7 @@ export function EnhancedServerScheduleTable({
 
   return (
     <div className='space-y-4 w-full'>
-      {/* Enhanced table controls */}
+      {/* Table controls */}
       <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4'>
         <div className='flex flex-wrap items-center gap-2'>
           <UploadJobModal jobType={jobType} />
@@ -404,18 +363,16 @@ export function EnhancedServerScheduleTable({
         </div>
       )}
 
-      {/* Enhanced data table */}
-      <div className='enhanced-sticky-table'>
-        <EnhancedServerDataTable
-          columns={columns}
-          data={data}
-          pagination={pagination}
-          totalCount={totalCount}
-          searchPlaceholder={t('searchJobs')}
-          searchValue={searchValue}
-          maxHeight='calc(100vh - 280px)'
-        />
-      </div>
+      {/* Use ServerDataTable */}
+      <ServerDataTable
+        columns={columns}
+        data={data}
+        pagination={pagination}
+        totalCount={totalCount}
+        searchPlaceholder={t('searchJobs')}
+        searchValue={searchValue}
+        maxHeight='calc(100vh - 280px)'
+      />
 
       {/* Delete confirmation dialog */}
       <DeleteConfirmationDialog
