@@ -78,9 +78,8 @@ export function TableCell({
     <UITableCell
       ref={cellRef}
       className={cn(
-        'table-cell fixed-width-cell',
+        'table-cell fixed-width-cell h-14',
         isSticky && 'sticky-table-cell',
-        // Add special styling for selection cells
         (props as any)['data-column-id'] === 'select' && 'selection-cell',
         className
       )}
@@ -89,13 +88,13 @@ export function TableCell({
       colSpan={colSpan}>
       <div
         className={cn(
-          'cell-wrapper relative',
+          'cell-wrapper relative h-full flex items-center',
           isSticky && 'sticky-cell-wrapper'
         )}>
         <div
           ref={contentRef}
           className={cn(
-            'cell-content',
+            'cell-content w-full',
             isSticky
               ? 'sticky-cell-content'
               : 'overflow-hidden text-ellipsis whitespace-nowrap'

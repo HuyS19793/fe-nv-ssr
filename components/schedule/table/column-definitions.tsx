@@ -29,8 +29,8 @@ export function getTableColumns({
   const selectionColumn: ColumnDef<ScheduledJob> = {
     id: 'select',
     meta: {
-      width: '60px', // Increased width
-      minWidth: '60px', // Increased min width
+      width: '50px', // Increased width
+      minWidth: '50px', // Increased min width
       maxWidth: '80px', // Increased max width
       isSticky: true,
       stickyPosition: 0,

@@ -190,6 +190,26 @@
     @apply overflow-y-auto;
     position: relative;
   }
+  
+  .table-row-height {
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+  }
+  
+  .table-header-height {
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+  }
+  
+  .compact-cell {
+    @apply py-2 px-3;
+  }
+  
+  .compact-cell-content {
+    @apply flex items-center h-full;
+  }
 }
 
 @layer components {
@@ -219,10 +239,11 @@
   }
   
   .table-header-cell {
-    @apply py-3 px-4 text-left align-middle font-semibold text-foreground;
+    @apply py-2 px-3 text-left align-middle font-semibold text-foreground;
     @apply bg-muted/90 border-b-2 border-primary/20;
     @apply whitespace-nowrap;
     position: relative;
+    height: 48px;
   }
   
   .sticky-column-header {
@@ -245,10 +266,11 @@
   }
   
   .table-cell {
-    @apply py-3 px-4 border-b align-middle relative;
+    @apply py-2 px-3 border-b align-middle relative;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    height: 56px;
   }
   
   .cell-content {
@@ -271,26 +293,18 @@
   .sticky-cell-content {
     display: block;
     max-width: 100%;
-    max-height: 2.5em;
-    overflow-y: auto;
-    overflow-x: hidden;
+    height: 100%;
+    overflow: hidden;
     text-overflow: ellipsis;
-    white-space: normal;
+    white-space: nowrap;
     word-break: break-word;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
   }
   
   .sticky-cell-content::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-  
-  .sticky-cell-content::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  .sticky-cell-content::-webkit-scrollbar-thumb {
-    background-color: var(--primary-200);
-    border-radius: 20px;
+    display: none;
   }
   
   .cell-tooltip {
@@ -315,10 +329,12 @@
   
   .table-row-even {
     @apply bg-background;
+    height: 56px;
   }
   
   .table-row-odd {
     @apply bg-muted/30;
+    height: 56px;
   }
   
   .table-row:hover {
