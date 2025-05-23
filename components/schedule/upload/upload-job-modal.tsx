@@ -2,7 +2,6 @@
 
 import { useState, useRef } from 'react'
 import { useTranslations } from 'next-intl'
-import { useRouter } from 'next/navigation'
 import { PlusIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -26,7 +25,6 @@ interface UploadJobModalProps {
 
 export function UploadJobModal({ jobType }: UploadJobModalProps) {
   const t = useTranslations('Schedule')
-  const router = useRouter()
 
   // Use refs to track state in event handlers without re-renders
   const isUploadingRef = useRef(false)

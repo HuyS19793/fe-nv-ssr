@@ -1,6 +1,9 @@
 // app/api/schedule/jobs/route.ts
 import { auth } from '@/lib/auth'
-import { getScheduledJobs, createScheduledJob } from '@/actions/schedule'
+import {
+  getScheduledJobs,
+  createScheduledJob,
+} from '@/actions/schedule/server-actions'
 import { NextRequest, NextResponse } from 'next/server'
 
 /**

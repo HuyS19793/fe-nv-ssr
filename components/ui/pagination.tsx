@@ -31,10 +31,6 @@ export interface PaginationProps {
    * Show compact version
    */
   compact?: boolean
-  /**
-   * Locale for i18n
-   */
-  locale?: string
 }
 
 /**
@@ -49,7 +45,6 @@ export function Pagination({
   basePath,
   additionalParams = {},
   compact = false,
-  locale,
 }: PaginationProps) {
   // Create URL for a specific page
   const createPageUrl = (targetPage: number) => {

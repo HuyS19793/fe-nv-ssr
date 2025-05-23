@@ -68,7 +68,7 @@ export function createPaginationParams(page: number, limit: number) {
  */
 export function createQueryString(
   searchParams: URLSearchParams | Record<string, string | string[] | undefined>,
-  params: Record<string, any>
+  params: Record<string, string | number | boolean | undefined>
 ): string {
   // Convert searchParams to a URLSearchParams object if it's not already
   const newParams =

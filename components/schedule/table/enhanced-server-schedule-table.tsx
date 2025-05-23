@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { ScheduledJob, deleteScheduledJobs } from '@/actions/schedule'
+import { ScheduledJob } from '@/actions/schedule/types'
+import { deleteScheduledJobs } from '@/actions/schedule/server-actions'
 import { useTranslations } from 'next-intl'
 import { ServerDataTable } from '@/components/tables/server-data-table'
 import { getServerTableColumns } from './server-column-definitions'
@@ -17,7 +18,6 @@ import { toast } from '@/components/ui/toast'
 import { DeleteConfirmationDialog } from '../delete-confirmation-dialog'
 import { useScheduleRefresh } from '@/hooks/use-schedule-refresh'
 import { DownloadAllButton } from '../download-all-button'
-import { cn } from '@/lib/utils'
 
 export type JobType = 'NAVI' | 'CVER'
 
@@ -31,7 +31,6 @@ interface EnhancedServerScheduleTableProps {
   }
   totalCount: number
   searchValue: string
-  filterItems?: FilterItem[]
 }
 
 // Define translations type
@@ -54,7 +53,6 @@ export function EnhancedServerScheduleTable({
   pagination,
   totalCount,
   searchValue,
-  filterItems = [],
 }: EnhancedServerScheduleTableProps) {
   const t = useTranslations('Schedule')
 

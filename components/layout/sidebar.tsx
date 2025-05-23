@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { usePathname, Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import {
@@ -36,66 +36,75 @@ export function Sidebar() {
   const authT = useTranslations('Auth')
 
   // Main navigation items with translation keys
-  const navItems: NavItem[] = [
-    {
-      titleKey: 'scheduleJob',
-      href: '/schedule',
-      icon: <Calendar className='size-5' />,
-    },
-    {
-      titleKey: 'setting',
-      href: '/setting',
-      icon: <Settings className='size-5' />,
-    },
-    {
-      titleKey: 'history',
-      icon: <RotateCcw className='size-5' />,
-      children: [
-        {
-          titleKey: 'execution',
-          href: '/history/execution',
-        },
-        {
-          titleKey: 'settingChange',
-          href: '/history/setting-change',
-        },
-      ],
-    },
-    {
-      titleKey: 'credential',
-      href: '/credential',
-      icon: <FileText className='size-5' />,
-    },
-    {
-      titleKey: 'parameterStorage',
-      icon: <Database className='size-5' />,
-      children: [
-        {
-          titleKey: 'manager',
-          href: '/parameter-storage/manager',
-        },
-        {
-          titleKey: 'activityLog',
-          href: '/parameter-storage/activity-log',
-        },
-      ],
-    },
-  ]
+  const navItems = useMemo(
+    () => [
+      {
+        titleKey: 'scheduleJob',
+        href: '/schedule',
+        icon: <Calendar className='size-5' />,
+      },
+      {
+        titleKey: 'setting',
+        href: '/setting',
+        icon: <Settings className='size-5' />,
+      },
+      {
+        titleKey: 'history',
+        icon: <RotateCcw className='size-5' />,
+        children: [
+          {
+            titleKey: 'execution',
+            href: '/history/execution',
+          },
+          {
+            titleKey: 'settingChange',
+            href: '/history/setting-change',
+          },
+        ],
+      },
+      {
+        titleKey: 'credential',
+        href: '/credential',
+        icon: <FileText className='size-5' />,
+      },
+      {
+        titleKey: 'parameterStorage',
+        icon: <Database className='size-5' />,
+        children: [
+          {
+            titleKey: 'manager',
+            href: '/parameter-storage/manager',
+          },
+          {
+            titleKey: 'activityLog',
+            href: '/parameter-storage/activity-log',
+          },
+        ],
+      },
+    ],
+    []
+  )
 
   // Initialize with empty state first
   const [openSections, setOpenSections] = useState<Record<number, boolean>>({})
 
   // Check if the current path matches or starts with the given href
-  const isActive = (href?: string) => {
-    if (!href) return false
-    return pathname === href || pathname.startsWith(href)
-  }
+  const isActive = useCallback(
+    (href?: string): boolean => {
+      if (!href) return false
+      return pathname === href || pathname.startsWith(href)
+    },
+    [pathname]
+  )
 
   // Check if any child item is active
-  const hasActiveChild = (item: NavItem) => {
-    if (!item.children) return false
-    return item.children.some((child) => isActive(child.href))
-  }
+  const hasActiveChild = useCallback(
+    (item: NavItem): boolean => {
+      if (!item.children) return false
+      return item.children.some((child) => isActive(child.href))
+    },
+    [isActive]
+  )
 
   // Set initial state after component is mounted
   useEffect(() => {
@@ -108,7 +117,7 @@ export function Sidebar() {
     })
 
     setOpenSections(initialState)
-  }, [pathname]) // Re-run when pathname changes
+  }, [pathname, hasActiveChild, navItems])
 
   // Toggle a section open/closed
   const toggleSection = (index: number) => {

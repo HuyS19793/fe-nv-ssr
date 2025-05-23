@@ -1,7 +1,7 @@
 'use client'
 
 import { ColumnDef, Row } from '@tanstack/react-table'
-import { ScheduledJob } from '@/actions/schedule'
+import { ScheduledJob } from '@/actions/schedule/types'
 import { columnMapping } from './column-mapping'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'

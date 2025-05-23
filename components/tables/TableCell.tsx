@@ -80,7 +80,8 @@ export function TableCell({
       className={cn(
         'table-cell fixed-width-cell h-14',
         isSticky && 'sticky-table-cell',
-        (props as any)['data-column-id'] === 'select' && 'selection-cell',
+        (props as { 'data-column-id'?: string })['data-column-id'] ===
+          'select' && 'selection-cell',
         className
       )}
       style={baseStyle}

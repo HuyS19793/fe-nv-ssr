@@ -4,9 +4,9 @@ import { getTranslations } from 'next-intl/server'
 import { Metadata } from 'next'
 import { Toaster } from '@/components/ui/toast'
 import { auth } from '@/lib/auth'
-import { getScheduledJobs } from '@/actions/schedule'
+import { getScheduledJobs } from '@/actions/schedule/server-actions'
 import { parseTableParams } from '@/lib/url-utils'
-import { filtersToQueryParams, queryParamsToFilters } from '@/lib/filter-utils'
+import { queryParamsToFilters } from '@/lib/filter-utils'
 
 // Force the page to be dynamic
 export const dynamic = 'force-dynamic'
@@ -22,19 +22,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 interface SchedulePageProps {
-  params: { locale: string }
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export default async function SchedulePage({
-  params,
   searchParams,
 }: SchedulePageProps) {
   const t = await getTranslations('Schedule')
   const resolvedSearchParams = await searchParams
 
   // Verify the user is authenticated with a valid session
-  const user = await auth.requireAuth('/login?callbackUrl=/schedule')
+  await auth.requireAuth('/login?callbackUrl=/schedule')
 
   // Parse search parameters directly from searchParams
   const { page, limit, search } = parseTableParams(resolvedSearchParams)
