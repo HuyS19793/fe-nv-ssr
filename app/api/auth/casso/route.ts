@@ -18,14 +18,15 @@ export async function POST(request: NextRequest) {
     let userData = null
     let isValidCredentials = false
 
+    // In development, always accept credentials without calling Casso API
     if (process.env.NODE_ENV === 'development') {
-      // Simple dev validation for Casso
       isValidCredentials = true
       userData = {
         id: employeeId,
         name: 'Casso User',
         username: employeeId,
         role: 'user',
+        access: 'dev-token-' + Date.now(), // Generate a unique token for development
       }
     } else {
       // Production validation
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       path: '/',
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
+      maxAge: 60 * 60 * 24, // 1 day
       sameSite: 'lax',
     })
 
@@ -89,7 +90,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       path: '/',
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
+      maxAge: 60 * 60 * 24, // 1 day
       sameSite: 'lax',
     })
 

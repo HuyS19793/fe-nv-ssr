@@ -93,7 +93,7 @@ export async function loginWithCredentials(
         httpOnly: true,
         path: '/',
         secure: !isDevelopment,
-        maxAge: 60 * 60 * 24 * 7, // 1 week
+        maxAge: 60 * 60 * 24, // 1 day
         sameSite: 'lax',
       })
 
@@ -103,7 +103,7 @@ export async function loginWithCredentials(
         httpOnly: true,
         path: '/',
         secure: !isDevelopment,
-        maxAge: 60 * 60 * 24 * 7, // 1 week
+        maxAge: 60 * 60 * 24, // 1 day
         sameSite: 'lax',
       })
 
@@ -217,7 +217,7 @@ export async function loginWithCasso(
         httpOnly: true,
         path: '/',
         secure: !isDevelopment,
-        maxAge: 60 * 60 * 24 * 7, // 1 week
+        maxAge: 60 * 60 * 24, // 1 day
         sameSite: 'lax',
       })
 
@@ -227,7 +227,7 @@ export async function loginWithCasso(
         httpOnly: true,
         path: '/',
         secure: !isDevelopment,
-        maxAge: 60 * 60 * 24 * 7, // 1 week
+        maxAge: 60 * 60 * 24, // 1 day
         sameSite: 'lax',
       })
 

@@ -1,7 +1,7 @@
 // hooks/use-auth.ts
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 
@@ -10,6 +10,30 @@ export function useAuth() {
   const queryClient = useQueryClient()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Add auto-logout check
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch('/api/auth/user')
+        if (!response.ok) {
+          // Session expired or invalid
+          await handleLogout()
+        }
+      } catch (error) {
+        console.error('Session check error:', error)
+        await handleLogout()
+      }
+    }
+
+    // Check session every minute
+    const interval = setInterval(checkSession, 60 * 1000)
+
+    // Initial check
+    checkSession()
+
+    return () => clearInterval(interval)
+  }, [])
 
   // Login with username/password
   async function login(
@@ -42,7 +66,7 @@ export function useAuth() {
       if (result.success) {
         // Set client-side cookie for immediate effect
         document.cookie = `logged-in=true; path=/; max-age=${
-          60 * 60 * 24 * 7
+          60 * 60 * 24
         }; SameSite=Lax`
 
         // Invalidate queries to refresh data
@@ -94,7 +118,7 @@ export function useAuth() {
       if (result.success) {
         // Set client-side cookie for immediate effect
         document.cookie = `logged-in=true; path=/; max-age=${
-          60 * 60 * 24 * 7
+          60 * 60 * 24
         }; SameSite=Lax`
 
         // Invalidate queries to refresh data
