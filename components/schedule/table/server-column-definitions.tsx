@@ -6,12 +6,14 @@ import { columnMapping } from './column-mapping'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
 
+export type JobType = 'NAVI' | 'CVER'
+
 interface GetServerColumnsOptions {
   isSelected: (job: ScheduledJob) => boolean
   isAllSelected: () => boolean
   toggleSelection: (job: ScheduledJob) => void
   toggleSelectAll: () => void
-  columnVisibility: Record<string, boolean>
+  jobType: JobType // Add jobType to filter columns
   translations: {
     [key: string]: string
   }
@@ -19,13 +21,14 @@ interface GetServerColumnsOptions {
 
 /**
  * Creates column definitions for ServerDataTable with 3 sticky columns
+ * Columns are filtered based on job type (NAVI vs CVER)
  */
 export function getServerTableColumns({
   isSelected,
   isAllSelected,
   toggleSelection,
   toggleSelectAll,
-  columnVisibility,
+  jobType,
   translations: t,
 }: GetServerColumnsOptions): ColumnDef<ScheduledJob>[] {
   // Selection column - sticky first (56px)
@@ -147,7 +150,72 @@ export function getServerTableColumns({
     },
   }
 
-  // Generate other columns (non-sticky)
+  // Define job type specific visible columns
+  const getVisibleColumns = (jobType: JobType): string[] => {
+    const commonColumns = [
+      'username',
+      'setting_id',
+      'status',
+      'modified',
+      'scheduler_weekday',
+      'scheduler_time',
+      'time',
+      'media',
+      'redownload_type',
+      'redownload',
+      'which_process',
+      'cube_off',
+      'conmane_off',
+    ]
+
+    if (jobType === 'CVER') {
+      return [
+        ...commonColumns,
+        'upload',
+        'upload_opemane',
+        'opemane',
+        'media_master_update',
+        'master_update_redownload_type',
+        'master_update_redownload',
+        'split_medias',
+        'split_days',
+        'skip_to',
+        'drive_folder',
+        'old_drive_folder',
+        'master_account',
+        'workplace',
+        'chanel_id',
+        'slack_id',
+      ]
+    }
+
+    // NAVI columns
+    return [
+      ...commonColumns,
+      'external_linked',
+      'is_maintaining',
+      'cad_inform',
+      'conmane_confirm',
+      'group_by',
+      'cad_id',
+      'wait_time',
+      'spreadsheet_id',
+      'spreadsheet_sheet',
+      'drive_folder',
+      'old_drive_folder',
+      'custom_info',
+      'master_account',
+      'use_api',
+      'workplace',
+      'chanel_id',
+      'slack_id',
+    ]
+  }
+
+  // Get visible columns for current job type
+  const visibleColumns = getVisibleColumns(jobType)
+
+  // Generate other columns (non-sticky) based on job type
   const otherColumns: ColumnDef<ScheduledJob>[] = Object.entries(columnMapping)
     .filter(([key]) => {
       const pinnedFields = ['job_name', 'job_status']
@@ -162,7 +230,7 @@ export function getServerTableColumns({
       return (
         !pinnedFields.includes(key) &&
         !excludedFields.includes(key) &&
-        columnVisibility[key]
+        visibleColumns.includes(key)
       )
     })
     .map(([key, header]) => {
