@@ -17,7 +17,7 @@ async function getAuthHeaders() {
   }
 }
 
-async function invalidateScheduleCache() {
+export async function invalidateScheduleCache() {
   revalidateTag('scheduledJobs-NAVI')
   revalidateTag('scheduledJobs-CVER')
   revalidateTag('scheduled-jobs-list')

@@ -74,7 +74,7 @@ export function Pagination({
 
     // Always include first and last page
     if (range[0] > 2) range.unshift('...')
-    if (range[range.length - 1] < pageCount - 1) range.push('...')
+    if (Number(range[range.length - 1]) < pageCount - 1) range.push('...')
 
     if (range[0] !== 1) range.unshift(1)
     if (range[range.length - 1] !== pageCount) range.push(pageCount)

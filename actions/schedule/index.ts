@@ -4,10 +4,24 @@
 // Export types
 export * from './types'
 
-// Export server actions
-export * from './server-actions'
+// Export server actions (main implementations)
+export {
+  getScheduledJobs,
+  updateScheduledJob,
+  deleteScheduledJob,
+  createScheduledJob,
+  deleteScheduledJobs,
+} from './server-actions'
 
-// Export utilities if needed
-export * from './queries'
+// Export query utilities (renamed to avoid conflicts)
+export {
+  fetchScheduledJobsWithParams,
+  buildScheduleQueryParams,
+  generateScheduleCacheTag,
+} from './queries'
 
-export * from './mutations'
+// Export query utilities
+export * from './query-utils'
+
+// Export cache utilities
+export { invalidateScheduleCache } from './mutations'

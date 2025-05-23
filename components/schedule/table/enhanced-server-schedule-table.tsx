@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo,useState } from 'react'
+import { useMemo,useState, useEffect } from 'react'
 
 import { RefreshCw,Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -13,6 +13,7 @@ import { toast } from '@/components/ui/toast'
 import { useFilter } from '@/hooks/use-filter'
 import { useScheduleRefresh } from '@/hooks/use-schedule-refresh'
 import { useTableSelection } from '@/hooks/use-table-selection'
+import { useEnhancedFilter } from '@/hooks/use-enhanced-filter'
 
 import { DeleteConfirmationDialog } from '../delete-confirmation-dialog'
 import { DownloadAllButton } from '../download-all-button'
@@ -21,6 +22,7 @@ import { FilterDropdown } from '../filter/filter-dropdown'
 import { UploadJobModal } from '../upload/upload-job-modal'
 
 import { getServerTableColumns } from './server-column-definitions'
+import type { FilterItem } from '@/types/filter'
 
 export type JobType = 'NAVI' | 'CVER'
 
@@ -34,6 +36,7 @@ interface EnhancedServerScheduleTableProps {
   }
   totalCount: number
   searchValue: string
+  filterItems?: FilterItem[]
 }
 
 // Define translations type
@@ -56,6 +59,7 @@ export function EnhancedServerScheduleTable({
   pagination,
   totalCount,
   searchValue,
+  filterItems = [],
 }: EnhancedServerScheduleTableProps) {
   const t = useTranslations('Schedule')
 
@@ -134,15 +138,26 @@ export function EnhancedServerScheduleTable({
     idField: 'id',
   })
 
-  // Filter management
+  // Filter management using enhanced hook
   const {
     filters,
     addFilter,
     removeFilter,
     clearFilters,
-    filterCount,
+    setFilters,
     isLoading,
-  } = useFilter()
+    filterCount,
+  } = useEnhancedFilter({
+    initialFilters: filterItems,
+    syncWithUrl: true,
+  })
+
+  // Initialize filters from filterItems if provided and filters are empty
+  useEffect(() => {
+    if (filterItems.length > 0 && filters.length === 0) {
+      setFilters(filterItems)
+    }
+  }, [filterItems, filters.length, setFilters])
 
   // Column definitions using ServerDataTable columns
   const columns = useMemo(
@@ -234,6 +249,31 @@ export function EnhancedServerScheduleTable({
         />
       )}
 
+      {/* Selection info */}
+      {selectionCount > 0 && (
+        <div className='flex items-center justify-between p-3 bg-primary/10 border border-primary/20 rounded-md'>
+          <span className='text-sm font-medium'>
+            {selectionCount} {t('itemsSelected')}
+          </span>
+          <div className='flex items-center gap-2'>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={clearSelection}>
+              {t('clearSelection')}
+            </Button>
+            <Button
+              variant='destructive'
+              size='sm'
+              onClick={handleBatchDelete}
+              className='flex items-center gap-2'>
+              <Trash2 className='h-4 w-4' />
+              {t('deleteSelected')}
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Data table */}
       <ServerDataTable
         columns={columns}
@@ -243,19 +283,6 @@ export function EnhancedServerScheduleTable({
         searchValue={searchValue}
         searchPlaceholder={t('searchPlaceholder')}
         maxHeight='calc(100vh - 16rem)'
-        filterComponent={
-          <div className='flex items-center gap-2'>
-            <Button
-              variant='outline'
-              size='sm'
-              onClick={handleBatchDelete}
-              disabled={selectionCount === 0}
-              className='flex items-center gap-2'>
-              <Trash2 className='h-4 w-4' />
-              {t('deleteSelected')}
-            </Button>
-          </div>
-        }
       />
 
       {/* Delete confirmation dialog */}
