@@ -1,10 +1,12 @@
 'use client'
 
-import { ColumnDef, Row } from '@tanstack/react-table'
-import { ScheduledJob } from '@/actions/schedule/types'
-import { columnMapping } from './column-mapping'
+import type { ColumnDef, Row } from '@tanstack/react-table'
+
+import type { ScheduledJob } from '@/actions/schedule/types'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
+
+import { columnMapping } from './column-mapping'
 
 interface GetServerColumnsOptions {
   isSelected: (job: ScheduledJob) => boolean

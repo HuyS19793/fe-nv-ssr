@@ -1,3 +1,5 @@
+import { FILE_CONSTANTS } from '@/lib/constants'
+
 export interface FileValidationResult {
   isValid: boolean
   errors: {
@@ -13,7 +15,7 @@ export interface FileValidationOptions {
 }
 
 const DEFAULT_OPTIONS: Required<FileValidationOptions> = {
-  maxSize: 50 * 1024 * 1024, // 50MB
+  maxSize: FILE_CONSTANTS.MAX_FILE_SIZE,
   allowedTypes: [
     'text/csv',
     'application/vnd.ms-excel',
@@ -47,7 +49,7 @@ export const validateFile = (
 
   // Validate file size
   if (file.size > opts.maxSize) {
-    const maxSizeMB = Math.round(opts.maxSize / (1024 * 1024))
+    const maxSizeMB = Math.round(opts.maxSize / FILE_CONSTANTS.BYTE_UNITS.MB)
     errors.size =
       errorMessages?.fileTooLarge || `File size exceeds ${maxSizeMB}MB limit`
   }

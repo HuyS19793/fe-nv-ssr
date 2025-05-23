@@ -1,23 +1,26 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { ScheduledJob } from '@/actions/schedule/types'
-import { deleteScheduledJobs } from '@/actions/schedule/server-actions'
+import { useMemo,useState } from 'react'
+
+import { RefreshCw,Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+
+import { deleteScheduledJobs } from '@/actions/schedule/server-actions'
+import type { ScheduledJob } from '@/actions/schedule/types'
 import { ServerDataTable } from '@/components/tables/server-data-table'
-import { getServerTableColumns } from './server-column-definitions'
-import { useTableSelection } from '@/hooks/use-table-selection'
 import { Button } from '@/components/ui/button'
-import { Trash2, RefreshCw } from 'lucide-react'
-import { FilterDropdown } from '../filter/filter-dropdown'
-import { ActiveFilters } from '../filter/active-filters'
-import { useFilter } from '@/hooks/use-filter'
-import { FilterItem } from '@/types/filter'
-import { UploadJobModal } from '../upload/upload-job-modal'
 import { toast } from '@/components/ui/toast'
-import { DeleteConfirmationDialog } from '../delete-confirmation-dialog'
+import { useFilter } from '@/hooks/use-filter'
 import { useScheduleRefresh } from '@/hooks/use-schedule-refresh'
+import { useTableSelection } from '@/hooks/use-table-selection'
+
+import { DeleteConfirmationDialog } from '../delete-confirmation-dialog'
 import { DownloadAllButton } from '../download-all-button'
+import { ActiveFilters } from '../filter/active-filters'
+import { FilterDropdown } from '../filter/filter-dropdown'
+import { UploadJobModal } from '../upload/upload-job-modal'
+
+import { getServerTableColumns } from './server-column-definitions'
 
 export type JobType = 'NAVI' | 'CVER'
 

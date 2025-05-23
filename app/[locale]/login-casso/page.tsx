@@ -1,7 +1,8 @@
 // app/[locale]/login-casso/page.tsx
-import CassoLoginRedirect from '@/components/auth/CassoLoginRedirect'
+import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
-import { Metadata } from 'next'
+
+import CassoLoginRedirect from '@/components/auth/CassoLoginRedirect'
 
 export const metadata: Metadata = {
   title: 'Casso Login - Navigator',

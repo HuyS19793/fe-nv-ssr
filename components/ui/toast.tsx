@@ -3,10 +3,11 @@
 
 import * as React from 'react'
 import { useEffect, useState } from 'react'
+
 import { X } from 'lucide-react'
 
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 interface ToastProps {
   title: string
@@ -30,7 +31,7 @@ let listeners: ((toasts: ToastType[]) => void)[] = []
 
 function updateToasts(newToasts: ToastType[]) {
   toasts = newToasts
-  listeners.forEach((listener) => listener(toasts))
+  for (const listener of listeners) listener(toasts)
 }
 
 // Toast function to add a new toast

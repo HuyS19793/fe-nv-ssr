@@ -1,10 +1,20 @@
 // components/tables/server-data-table.tsx
 'use client'
 
-import { ColumnDef, RowData, CellContext } from '@tanstack/react-table'
-import { Input } from '@/components/ui/input'
+import { useEffect, useRef,useState } from 'react'
+
+import type { CellContext,ColumnDef, RowData } from '@tanstack/react-table'
 import { Search } from 'lucide-react'
-import { useState, useEffect, useRef } from 'react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from 'lucide-react'
+
+import { TableCell } from '@/components/tables/TableCell'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -12,14 +22,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { TableCell } from '@/components/tables/TableCell'
-import { Button } from '@/components/ui/button'
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from 'lucide-react'
 import { useServerTable } from '@/hooks/use-server-table'
 import { cn } from '@/lib/utils'
 

@@ -1,11 +1,12 @@
 'use client'
 
-import { useRouter, usePathname } from '@/i18n/navigation'
-import { Button } from '@/components/ui/button'
-import { useLocale } from 'next-intl'
-import { routing } from '@/i18n/routing'
-import { useTranslations } from 'next-intl'
 import { Globe } from 'lucide-react'
+import { useLocale } from 'next-intl'
+import { useTranslations } from 'next-intl'
+
+import { Button } from '@/components/ui/button'
+import { usePathname,useRouter } from '@/i18n/navigation'
+import { routing } from '@/i18n/routing'
 
 // Language display names
 const languageNames: Record<string, string> = {

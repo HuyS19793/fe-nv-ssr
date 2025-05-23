@@ -1,4 +1,4 @@
-import { revalidateTag, revalidatePath } from 'next/cache'
+import { revalidatePath,revalidateTag } from 'next/cache'
 
 type CacheInvalidationOptions = {
   tags?: string[] // Specific cache tags to invalidate
@@ -19,16 +19,16 @@ export function invalidateCache({
   allFetchData = false,
 }: CacheInvalidationOptions = {}) {
   // 1. Revalidate specific tags
-  tags.forEach((tag) => {
+  for (const tag of tags) {
     try {
       revalidateTag(tag)
     } catch (error) {
       console.error(`Failed to revalidate tag: ${tag}`, error)
     }
-  })
+  }
 
   // 2. Revalidate tag patterns by generating variants
-  tagPatterns.forEach((pattern) => {
+  for (const pattern of tagPatterns) {
     try {
       // For wildcard patterns, we can revalidate the base tag
       const baseTag = pattern.replace('*', '')
@@ -39,10 +39,10 @@ export function invalidateCache({
     } catch (error) {
       console.error(`Failed to revalidate tag pattern: ${pattern}`, error)
     }
-  })
+  }
 
   // 3. Revalidate specific paths
-  paths.forEach((path) => {
+  for (const path of paths) {
     try {
       // Determine if we should invalidate just the page or the layout too
       const type = layout ? 'layout' : 'page'
@@ -55,7 +55,7 @@ export function invalidateCache({
     } catch (error) {
       console.error(`Failed to revalidate path: ${path}`, error)
     }
-  })
+  }
 
   // 4. If allFetchData is true, invalidate a special tag that can be used as a marker
   if (allFetchData) {

@@ -18,6 +18,10 @@ import { FileUploadArea } from './file-upload-area'
 import { toast } from '@/components/ui/toast'
 import { uploadScheduledJobFile } from '@/actions/uploadJob'
 import { useScheduleRefresh } from '@/hooks/use-schedule-refresh'
+import {
+  validateUploadFile,
+  createUploadFormData,
+} from './upload-form-handlers'
 
 interface UploadJobModalProps {
   jobType: 'NAVI' | 'CVER'
@@ -25,54 +29,18 @@ interface UploadJobModalProps {
 
 export function UploadJobModal({ jobType }: UploadJobModalProps) {
   const t = useTranslations('Schedule')
-
-  // Use refs to track state in event handlers without re-renders
   const isUploadingRef = useRef(false)
 
-  // State for controlled components
   const [file, setFile] = useState<File | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [errors, setErrors] = useState<{ type?: string; size?: string }>({})
   const [isOpen, setIsOpen] = useState(false)
 
-  // Add the refresh hook
   const { refresh } = useScheduleRefresh({
     jobType,
-    showErrorToast: true, // Only show error toasts
+    showErrorToast: true,
   })
 
-  // Validate file
-  const validateFile = (fileToValidate: File) => {
-    const newErrors: { type?: string; size?: string } = {}
-
-    // Check file type
-    const validTypes = [
-      'text/csv',
-      'application/vnd.ms-excel',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel.sheet.macroEnabled.12',
-    ]
-
-    const validExtensions = ['.csv', '.xlsx', '.xls', '.xlsm']
-    const fileName = fileToValidate.name.toLowerCase()
-    const hasValidExtension = validExtensions.some((ext) =>
-      fileName.endsWith(ext)
-    )
-
-    if (!validTypes.includes(fileToValidate.type) && !hasValidExtension) {
-      newErrors.type = t('invalidFileType')
-    }
-
-    // Check file size (50MB max)
-    const maxSize = 50 * 1024 * 1024
-    if (fileToValidate.size > maxSize) {
-      newErrors.size = t('fileSizeTooLarge', { maxSize: '50MB' })
-    }
-
-    return newErrors
-  }
-
-  // File change handler
   const handleFileChange = (newFile: File | null) => {
     setErrors({})
 
@@ -81,22 +49,24 @@ export function UploadJobModal({ jobType }: UploadJobModalProps) {
       return
     }
 
-    const validationErrors = validateFile(newFile)
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors)
+    const validation = validateUploadFile(newFile, {
+      invalidFileType: t('invalidFileType'),
+      fileSizeTooLarge: t('fileSizeTooLarge', { maxSize: '50MB' }),
+    })
+
+    if (!validation.isValid) {
+      setErrors(validation.errors)
       return
     }
 
     setFile(newFile)
   }
 
-  // Clear file handler
   const clearFile = () => {
     setFile(null)
     setErrors({})
   }
 
-  // Reset all state
   const resetState = () => {
     setFile(null)
     setErrors({})
@@ -104,7 +74,6 @@ export function UploadJobModal({ jobType }: UploadJobModalProps) {
     isUploadingRef.current = false
   }
 
-  // Submit handler
   const handleSubmit = async () => {
     if (!file || isUploadingRef.current) return
 
@@ -112,27 +81,17 @@ export function UploadJobModal({ jobType }: UploadJobModalProps) {
     isUploadingRef.current = true
 
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('jobType', jobType)
-
+      const formData = createUploadFormData(file, jobType)
       const result = await uploadScheduledJobFile(formData)
 
       if (result.success) {
-        // First close the modal
         setIsOpen(false)
-
-        // Show success toast
         toast({
           title: t('uploadSuccess'),
           description: result.message || t('jobsCreatedSuccessfully'),
           variant: 'success',
         })
-
-        // Reset state
         resetState()
-
-        // Use the new refresh mechanism instead of the old one
         await refresh()
       } else {
         toast({
@@ -154,27 +113,23 @@ export function UploadJobModal({ jobType }: UploadJobModalProps) {
     }
   }
 
-  // We'll completely control the modal state to avoid any race conditions
-  const openModal = () => setIsOpen(true)
   const closeModal = () => {
     if (isUploadingRef.current) return
     setIsOpen(false)
-    // Reset the state after closing
     resetState()
   }
 
-  // Check if we have any errors
   const hasErrors = Object.keys(errors).length > 0
 
   return (
     <>
-      {/* Use a regular button instead of a trigger for better control */}
-      <Button onClick={openModal} className='flex items-center gap-2'>
+      <Button
+        onClick={() => setIsOpen(true)}
+        className='flex items-center gap-2'>
         <PlusIcon className='h-4 w-4' />
         {t('newJob')}
       </Button>
 
-      {/* Control the dialog open state directly */}
       <AlertDialog
         open={isOpen}
         onOpenChange={(open) => {
@@ -218,23 +173,7 @@ export function UploadJobModal({ jobType }: UploadJobModalProps) {
               className={isUploading ? 'opacity-80 cursor-wait' : ''}>
               {isUploading ? (
                 <>
-                  <svg
-                    className='animate-spin -ml-1 mr-2 h-4 w-4 text-white'
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='none'
-                    viewBox='0 0 24 24'>
-                    <circle
-                      className='opacity-25'
-                      cx='12'
-                      cy='12'
-                      r='10'
-                      stroke='currentColor'
-                      strokeWidth='4'></circle>
-                    <path
-                      className='opacity-75'
-                      fill='currentColor'
-                      d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
-                  </svg>
+                  <div className='animate-spin -ml-1 mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full' />
                   {t('uploading')}
                 </>
               ) : (

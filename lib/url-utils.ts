@@ -78,25 +78,25 @@ export function createQueryString(
 
   // If searchParams is a Record, add its entries to newParams
   if (!(searchParams instanceof URLSearchParams)) {
-    Object.entries(searchParams).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(searchParams)) {
       if (value !== undefined) {
         if (Array.isArray(value)) {
-          value.forEach((v) => newParams.append(key, v))
+          for (const v of value) newParams.append(key, v)
         } else {
           newParams.set(key, value)
         }
       }
-    })
+    }
   }
 
   // Add or update parameters
-  Object.entries(params).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(params)) {
     if (value === undefined || value === null) {
       newParams.delete(key)
     } else {
       newParams.set(key, value.toString())
     }
-  })
+  }
 
   const query = newParams.toString()
   return query ? `?${query}` : ''

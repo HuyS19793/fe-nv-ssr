@@ -1,8 +1,11 @@
 'use client'
 
-import { useRef, useState, DragEvent, ChangeEvent } from 'react'
+import { useRef, useState } from 'react'
+
+import { File, Upload, X } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { Upload, File, X } from 'lucide-react'
+import type { ChangeEvent,DragEvent } from 'react';
+
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 

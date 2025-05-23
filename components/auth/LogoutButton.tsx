@@ -1,10 +1,11 @@
 // components/auth/LogoutButton.tsx
 'use client'
 
-import { useAuth } from '@/contexts/auth-context'
 import { LogOut } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { useTranslations } from 'next-intl'
+
+import { Button } from '@/components/ui/button'
+import { useAuth } from '@/contexts/auth-context'
 
 export function LogoutButton() {
   const { logout, isLoading } = useAuth()

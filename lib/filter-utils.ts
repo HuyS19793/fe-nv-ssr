@@ -1,4 +1,4 @@
-import { FilterItem } from '@/types/filter'
+import type { FilterItem } from '@/types/filter'
 
 /**
  * Convert filter items to URL query parameters
@@ -10,12 +10,12 @@ export function filtersToQueryParams(
 ): Record<string, string> {
   const params: Record<string, string> = {}
 
-  filters.forEach((filter) => {
+  for (const filter of filters) {
     // For include filters, use field name directly
     // For exclude filters, prefix with 'not_'
     const paramKey = filter.include ? filter.key : `not_${filter.key}`
     params[paramKey] = filter.value
-  })
+  }
 
   return params
 }
@@ -32,10 +32,10 @@ export function queryParamsToFilters(params: URLSearchParams): FilterItem[] {
   const skipParams = ['page', 'limit', 'search', 'jobType']
 
   // Process each query parameter
-  params.forEach((value, key) => {
+  for (const [key, value] of params.entries()) {
     // Skip standard pagination and search params
     if (skipParams.includes(key)) {
-      return
+      continue
     }
 
     // Check if it's an exclude filter (starts with 'not_')
@@ -52,7 +52,7 @@ export function queryParamsToFilters(params: URLSearchParams): FilterItem[] {
         include: true,
       })
     }
-  })
+  }
 
   return filters
 }

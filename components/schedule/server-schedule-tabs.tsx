@@ -2,14 +2,18 @@
 'use client'
 
 import * as React from 'react'
-import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
-import { JobType } from './table/enhanced-server-schedule-table'
-import { EnhancedServerScheduleTable } from './table/enhanced-server-schedule-table'
-import { ScheduledJob } from '@/actions/schedule/types'
+
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+
+import { useTranslations } from 'next-intl'
+
+import type { ScheduledJob } from '@/actions/schedule/types'
 import { createQueryString } from '@/lib/url-utils'
-import { FilterItem } from '@/types/filter'
+import { cn } from '@/lib/utils'
+import type { FilterItem } from '@/types/filter'
+
+import type { JobType } from './table/enhanced-server-schedule-table'
+import { EnhancedServerScheduleTable } from './table/enhanced-server-schedule-table'
 
 interface ServerScheduleTabsProps {
   jobType: JobType

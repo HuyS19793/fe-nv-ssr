@@ -1,17 +1,17 @@
 // app/[locale]/layout.tsx
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-
-import { Layout } from '@/components/layout'
 import { NextIntlClientProvider } from 'next-intl'
 import { notFound } from 'next/navigation'
 import { hasLocale } from 'next-intl'
-import { routing } from '@/i18n/routing'
 import { getMessages } from 'next-intl/server'
-import '../globals.css'
+
+import { Layout } from '@/components/layout'
+import { routing } from '@/i18n/routing'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { QueryProvider } from '@/components/providers/query-provider'
 import { AuthProvider } from '@/contexts/auth-context'
+import '../globals.css'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -37,16 +37,11 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params
 
-  // Ensure that the incoming `locale` is valid using hasLocale
   if (!hasLocale(routing.locales, locale)) {
     notFound()
   }
 
-  // Get messages for the current locale
   const messages = await getMessages()
-
-  // Extract the current path from children or URL
-  // to determine if we're on a login page
   const isLoginPage =
     children?.toString().includes('/login') ||
     children?.toString().includes('/login-casso')

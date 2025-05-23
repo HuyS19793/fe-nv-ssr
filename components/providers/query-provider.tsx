@@ -1,7 +1,8 @@
 'use client'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState } from 'react'
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 export function QueryProvider({ children }: { children: React.ReactNode }) {
   // Create a query client that persists for the lifetime of the component

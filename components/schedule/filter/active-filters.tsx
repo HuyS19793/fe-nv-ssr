@@ -1,10 +1,13 @@
 'use client'
 
 import * as React from 'react'
-import { FilterItem } from '@/types/filter'
-import { useTranslations } from 'next-intl'
+
 import { X } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+
 import { Button } from '@/components/ui/button'
+import type { FilterItem } from '@/types/filter'
+
 import { columnMapping } from '../table/column-mapping'
 
 interface ActiveFiltersProps {

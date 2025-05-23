@@ -2,9 +2,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
+
 import { loginWithCasso } from '@/actions/auth'
+import { Button } from '@/components/ui/button'
+
 import { CassoLogo } from './CassoComponents'
 
 interface CassoTranslations {

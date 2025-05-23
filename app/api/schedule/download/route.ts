@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
+import {
+  attemptDownload,
+  extractFilename,
+  handleDownloadError,
+} from './download-handlers'
 
 /**
  * GET handler for downloading scheduled jobs CSV
@@ -28,60 +33,16 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const apiUrl = `${baseUrl}/job/scheduled-job/to_csv?job_type=${jobType}`
-
-    // Try different Accept headers
-    const acceptHeaders = [
-      'text/csv',
-      'application/csv',
-      'text/plain',
-      'application/octet-stream',
-      '*/*',
-    ]
-
-    let response: Response | null = null
-    let lastError: string = ''
-
-    for (const acceptHeader of acceptHeaders) {
-      try {
-        response = await fetch(apiUrl, {
-          method: 'GET',
-          headers: {
-            Accept: acceptHeader,
-            Authorization: `Bearer ${user.access}`,
-          },
-        })
-
-        if (response.ok) {
-          break // Success with this header
-        } else if (response.status === 401) {
-          return NextResponse.json(
-            { error: 'Authentication failed' },
-            { status: 401 }
-          )
-        } else if (response.status !== 406) {
-          break
-        }
-      } catch (error) {
-        lastError = error instanceof Error ? error.message : 'Unknown error'
-        continue
-      }
-    }
+    const response = await attemptDownload({
+      baseUrl,
+      jobType,
+      accessToken: user.access,
+    })
 
     if (!response || !response.ok) {
-      let errorMessage = 'Failed to fetch CSV data'
-
-      if (response) {
-        try {
-          const errorData = await response.json()
-          errorMessage =
-            errorData.detail || errorData.message || `HTTP ${response.status}`
-        } catch {
-          errorMessage = `HTTP ${response.status}: ${response.statusText}`
-        }
-      } else {
-        errorMessage = lastError || 'Network error'
-      }
+      const errorMessage = response
+        ? await handleDownloadError(response)
+        : 'Network error'
 
       return NextResponse.json(
         { error: errorMessage },
@@ -94,16 +55,7 @@ export async function GET(request: NextRequest) {
 
     // Get filename from Content-Disposition header or use default
     const contentDisposition = response.headers.get('Content-Disposition')
-    let filename = `ALL_${jobType}_SCHEDULED_JOB.csv`
-
-    if (contentDisposition) {
-      const filenameMatch = contentDisposition.match(
-        /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
-      )
-      if (filenameMatch && filenameMatch[1]) {
-        filename = filenameMatch[1].replace(/['"]/g, '')
-      }
-    }
+    const filename = extractFilename(contentDisposition)
 
     // Return the file with proper headers
     return new NextResponse(csvData, {

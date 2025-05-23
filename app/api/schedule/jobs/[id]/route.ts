@@ -1,10 +1,12 @@
 // app/api/schedule/jobs/[id]/route.ts
-import { NextRequest, NextResponse } from 'next/server'
-import {
-  updateScheduledJob,
-  deleteScheduledJob,
-} from '@/actions/schedule/server-actions'
 import { revalidateTag } from 'next/cache'
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server'
+
+import {
+  deleteScheduledJob,
+  updateScheduledJob,
+} from '@/actions/schedule/server-actions'
 
 export async function PATCH(
   request: NextRequest,

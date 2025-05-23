@@ -1,8 +1,9 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { ArrowDownCircle } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+
+import { Button } from '@/components/ui/button'
 import { useDownloadSchedule } from '@/hooks/use-download-schedule'
 import { cn } from '@/lib/utils'
 
