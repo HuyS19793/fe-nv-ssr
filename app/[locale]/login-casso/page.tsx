@@ -9,13 +9,16 @@ export const metadata: Metadata = {
   description: 'Login with Casso to Navigator Admin Dashboard',
 }
 
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
 export default async function LoginCassoPage({
   searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined }
-}) {
-  const employeeId = searchParams['employee-id'] as string
-  const cassoToken = searchParams['casso-token'] as string
+}: PageProps) {
+  const resolvedSearchParams = await searchParams
+  const employeeId = resolvedSearchParams['employee-id'] as string
+  const cassoToken = resolvedSearchParams['casso-token'] as string
 
   // Get translations on the server
   const t = await getTranslations('Auth')

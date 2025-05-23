@@ -1,6 +1,6 @@
 // app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { validateCredentials, createCookieOptions } from './login-handler'
+import { validateCredentials, createCookieOptions } from '@/utils/auth-utils'
 
 export async function POST(request: NextRequest) {
   try {

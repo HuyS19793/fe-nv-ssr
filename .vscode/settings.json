@@ -1,8 +1,7 @@
 {
   "typescript.preferences.importModuleSpecifier": "relative",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "never"
+    "source.fixAll.eslint": "explicit"
   },
   "eslint.validate": [
     "javascript",
@@ -16,4 +15,4 @@
   "editor.quickSuggestions": {
     "strings": "on"
   }
-} 
+}

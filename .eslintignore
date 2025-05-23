@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Production builds
+.next/
+out/
+dist/
+build/
+
+# Environment files
+.env*
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Cache
+.cache/
+*.log
+
+# Config files that should be ignored
+*.config.js
+*.config.mjs
+tailwind.config.*
+
+# Scripts
+scripts/ 

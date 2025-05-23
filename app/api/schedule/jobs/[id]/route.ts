@@ -8,12 +8,11 @@ import {
   updateScheduledJob,
 } from '@/actions/schedule/server-actions'
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest) {
   try {
-    const id = params.id
+    const { pathname } = request.nextUrl
+    const id = pathname.split('/').pop()
+    if (!id) throw new Error('Job ID is required')
     const body = await request.json()
 
     // Update the job
@@ -42,12 +41,11 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  _request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest) {
   try {
-    const id = params.id
+    const { pathname } = request.nextUrl
+    const id = pathname.split('/').pop()
+    if (!id) throw new Error('Job ID is required')
 
     // Delete the job
     await deleteScheduledJob(id)
